@@ -25,8 +25,10 @@ public class Level extends JPanel implements ActionListener{
     ArrayList<Rigidbody> rbs;
     Player player;
     Timer timer;
-    private final int DELAY = 10;
+    private final int DELAY = 15;
     MenuState menu;
+
+    int scaleBy = 40;
 
     public Level(){
         initLevel();
@@ -39,10 +41,10 @@ public class Level extends JPanel implements ActionListener{
         timer.start();
 
         rbs = new ArrayList<Rigidbody>();
-        rbs.add(new Rigidbody(new Dimension(5, 5), new MathVector(0, 0)));
+        rbs.add(new Rigidbody(new Dimension(28, 5), new MathVector(0, 10)));
         //rbs.add(new DynamicRigidbody(new Dimension(10, 10), new MathVector<Integer>(1, 2)));
 
-        player = new Player();
+        player = new Player(new Dimension(1, 1), new MathVector(0, 0), 20);
 
         menu = MenuState.GAME;
     }
@@ -51,13 +53,17 @@ public class Level extends JPanel implements ActionListener{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        Dimension screensize = getSize();
+        MathVector scale = new MathVector(screensize.width/scaleBy, screensize.height/scaleBy);
+        MathVector offset = new MathVector(0, 0);
+
 
         switch (menu){
             case GAME:
                 for (Rigidbody rb : rbs) {
-                    rb.render(g);
+                    rb.render(g, offset, scale);
                 }
-                player.render(g);
+                player.render(g, offset, scale);
             case PAUSE:
 
             case OPTIONS:
@@ -68,7 +74,7 @@ public class Level extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        player.update(timer.getDelay());
+        player.update(timer.getDelay(), rbs);
         repaint();
     }
 

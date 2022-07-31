@@ -3,6 +3,8 @@ package Game;
 import Physics.MathVector;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
 
 public class Rigidbody{
@@ -56,19 +58,29 @@ public class Rigidbody{
         return g2d;
     }
 
-    public void render(Graphics g){
+    public void render(Graphics g, MathVector offset, MathVector scale){
 
         Graphics2D g2d = setupGraphics2D(g);
 
         g2d.setStroke(new BasicStroke(1));
         g2d.setColor(Color.red);
 
-        Rectangle img = new Rectangle(pos.getX(), pos.getY(), size.width, size.height);
+        MathVector origin = pos.sub(offset);
+
+        Rectangle img = new Rectangle(origin.getX()*scale.getY(), origin.getY()*scale.getY(), size.width*scale.getY(), size.height*scale.getY());
 
         g2d.draw(img);
     }
 
-    public void update(int delay){
+    public void update(int delay, ArrayList<Rigidbody> rbs){
 
     }
+
+    enum Side{
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
+    }
+
 }
