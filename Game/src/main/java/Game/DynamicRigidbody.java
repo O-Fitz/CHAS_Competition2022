@@ -84,7 +84,7 @@ public class DynamicRigidbody extends Rigidbody{
             return (pos1 <= pos2 & pos2 <= pos1+length1) || (pos1 <= pos2+length2 & pos2+length2 <= pos1+length1);
         }
         else{
-            return (pos2 <= pos2 & pos1 <= pos2+length2) || (pos2 <= pos1+length1 & pos1+length1 <= pos2+length2);
+            return (pos2 <= pos1 & pos1 <= pos2+length2) || (pos2 <= pos1+length1 & pos1+length1 <= pos2+length2);
         }
     }
 
