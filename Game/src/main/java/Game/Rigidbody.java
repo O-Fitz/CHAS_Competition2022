@@ -9,23 +9,34 @@ import java.util.Vector;
 
 public class Rigidbody{
 
-    protected Dimension size;
-    protected MathVector pos;
+    private Dimension size;
+    private MathVector pos;
+
+    private MathVector collisionAreaPos;
+    private Dimension collisionAreaSize;
+
+    private boolean collide = true;
 
     // Constructors
     public Rigidbody(){
         size = new Dimension(1, 1);
-        pos = new MathVector(0, 0);
+        pos = new MathVector(0.0, 0.0);
+        collisionAreaPos = pos;
+        collisionAreaSize = size;
     }
 
     public Rigidbody(Dimension size){
         this.size = size;
-        pos = new MathVector(0, 0);
+        pos = new MathVector(0.0, 0.0);
+        collisionAreaPos = pos;
+        collisionAreaSize = size;
     }
 
     public Rigidbody(Dimension size, MathVector position){
         this.size = size;
         pos = position;
+        collisionAreaPos = pos;
+        collisionAreaSize = size;
     }
 
 
@@ -33,17 +44,32 @@ public class Rigidbody{
     public MathVector getPos() {
         return pos;
     }
-
     public void setPos(MathVector pos) {
         this.pos = pos;
     }
-
     public Dimension getSize() {
         return size;
     }
-
     public void setSize(Dimension size) {
         this.size = size;
+    }
+    public MathVector getCollisionAreaPos() {
+        return collisionAreaPos;
+    }
+    public void setCollisionAreaPos(MathVector collisionAreaPos) {
+        this.collisionAreaPos = collisionAreaPos;
+    }
+    public Dimension getCollisionAreaSize() {
+        return collisionAreaSize;
+    }
+    public void setCollisionAreaSize(Dimension collisionAreaSize) {
+        this.collisionAreaSize = collisionAreaSize;
+    }
+    public boolean isCollide() {
+        return collide;
+    }
+    public void setCollide(boolean collide) {
+        this.collide = collide;
     }
 
     protected Graphics2D setupGraphics2D(Graphics g){
@@ -67,7 +93,11 @@ public class Rigidbody{
 
         MathVector origin = pos.sub(offset);
 
-        Rectangle img = new Rectangle(origin.getX()*scale.getY(), origin.getY()*scale.getY(), size.width*scale.getY(), size.height*scale.getY());
+        int x = (int)Math.round(origin.getX()*scale.getY());
+        int y = (int)Math.round(origin.getY()*scale.getY());
+        int w = (int)Math.round(size.width*scale.getY());
+        int h = (int)Math.round(size.height*scale.getY());
+        Rectangle img = new Rectangle(x, y, w, h);
 
         g2d.draw(img);
     }
@@ -80,7 +110,8 @@ public class Rigidbody{
         TOP,
         BOTTOM,
         LEFT,
-        RIGHT
+        RIGHT,
+        NONE
     }
 
 }

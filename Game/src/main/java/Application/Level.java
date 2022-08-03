@@ -28,7 +28,7 @@ public class Level extends JPanel implements ActionListener{
     private final int DELAY = 15;
     MenuState menu;
 
-    int scaleBy = 40;
+    double scaleBy = 40;
 
     public Level(){
         initLevel();
@@ -41,10 +41,10 @@ public class Level extends JPanel implements ActionListener{
         timer.start();
 
         rbs = new ArrayList<Rigidbody>();
-        rbs.add(new Rigidbody(new Dimension(28, 5), new MathVector(0, 10)));
+        rbs.add(new Rigidbody(new Dimension(28, 5), new MathVector(0.0, 10.0)));
         //rbs.add(new DynamicRigidbody(new Dimension(10, 10), new MathVector<Integer>(1, 2)));
 
-        player = new Player(new Dimension(1, 1), new MathVector(0, 0), 20);
+        player = new Player(new Dimension(1, 1), new MathVector(0.0, 0.0), 20);
 
         menu = MenuState.GAME;
     }
@@ -55,7 +55,7 @@ public class Level extends JPanel implements ActionListener{
         super.paintComponent(g);
         Dimension screensize = getSize();
         MathVector scale = new MathVector(screensize.width/scaleBy, screensize.height/scaleBy);
-        MathVector offset = new MathVector(0, 0);
+        MathVector offset = new MathVector(0.0, 0.0);
 
 
         switch (menu){
