@@ -1,18 +1,11 @@
 package Application;
 
-import Game.DynamicRigidbody;
 import Game.Player;
 import Game.Rigidbody;
 import Physics.MathVector;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,122 +13,201 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class Level extends JPanel implements ActionListener{
+// An abstract class that all levels extend
+// Allows all levels to have the same base functionality and have unique level design
+public abstract class Level extends JPanel implements ActionListener{
 
-    ArrayList<Rigidbody> rbs;
-    Player player;
-    Timer timer;
+    private ArrayList<Rigidbody> rbs = new ArrayList<Rigidbody>();
+    private Player player;
+    private Timer timer;
     private final int DELAY = 15;
-    MenuState menu;
+    private State menu;
+
+
 
     double scaleBy = 40;
+    MathVector offset = new MathVector(0.0, 0.0);
+    MathVector scale = new MathVector(0.0, 0.0);
 
     public Level(){
-        initLevel();
-    }
-
-    void initLevel(){
         addKeyListener(new TAdapter());
         setFocusable(true);
         timer = new Timer(DELAY, this);
         timer.start();
+        menu = State.PLAY;
 
-        rbs = new ArrayList<Rigidbody>();
-        rbs.add(new Rigidbody(new Dimension(28, 5), new MathVector(0.0, 10.0)));
-        //rbs.add(new DynamicRigidbody(new Dimension(10, 10), new MathVector<Integer>(1, 2)));
+        // Sets up level design
+        initLevel();
+    }
 
-        player = new Player(new Dimension(1, 1), new MathVector(0.0, 0.0), 20);
+    // This method is a template method that every level overides
+    // Sets up the level design, eg platforms, enemies etc
+    protected void initLevel(){
 
-        menu = MenuState.GAME;
+    }
+
+    void calculateOffset(Dimension screensize){
+
+
+        double buffer = 2.5;
+
+        double scw = ((double)screensize.width/(scaleBy))*(2.0/3.0);
+
+        if (player.getMidPos().getX() + offset.getX() - scw > buffer)
+            offset.setX(player.getMidPos().getX()-buffer-scw);
+
+        else if (player.getMidPos().getX() + offset.getX() - scw < -buffer)
+            offset.setX(player.getMidPos().getX()+buffer-scw);
+
+        offset.setY(player.getMidPos().getY()-(double)screensize.height/(scaleBy));
+
+
+    }
+
+    // Renders the level, all of the rigidbodies and the player
+    private void renderLevel(Graphics g){
+        Dimension screensize = getSize();
+        scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
+        calculateOffset(screensize);
+
+        for (Rigidbody rb : rbs) {
+            rb.render(g, offset, scale);
+        }
+
+        player.render(g, offset, scale);
+    }
+
+    // Renders the pause menu
+    // TODO: Create pause menu
+    private void renderPause(Graphics g){}
+
+    // Renders the options menu
+    // TODO: Create options menu, should be accessible from pause menu and home screen
+    private void renderOptions(Graphics g){}
+
+    private void update(){
+        player.update(timer.getDelay(), rbs);
     }
 
 
+    // Called every frame to paint the screen
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        Dimension screensize = getSize();
-        MathVector scale = new MathVector(screensize.width/scaleBy, screensize.height/scaleBy);
-        MathVector offset = new MathVector(0.0, 0.0);
-
 
         switch (menu){
-            case GAME:
-                for (Rigidbody rb : rbs) {
-                    rb.render(g, offset, scale);
-                }
-                player.render(g, offset, scale);
-            case PAUSE:
-
-            case OPTIONS:
-
+            case PLAY->     renderLevel(g);
+            case PAUSE->    renderPause(g);
+            case OPTIONS->  renderOptions(g);
         }
 
     }
 
+    // Is performed every DELAY ms
     @Override
     public void actionPerformed(ActionEvent e) {
-        player.update(timer.getDelay(), rbs);
+        switch (menu){
+            case PLAY -> {
+                update();
+            }
+            case PAUSE -> {}
+            case OPTIONS -> {}
+        }
         repaint();
     }
 
-
-    private void drawDonut(Graphics g){
-        Graphics2D g2d = (Graphics2D) g;
-
-        RenderingHints rh = new RenderingHints(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
-        );
-
-        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-        g2d.setRenderingHints(rh);
-
-        Dimension size = getSize();
-        double w = size.getWidth();
-        double h = size.getHeight();
-
-        int eh = 80;
-        int ew = 80;
-
-        Ellipse2D e = new Ellipse2D.Double(0, 0, ew, eh);
-        g2d.setStroke(new BasicStroke(1));
-        g2d.setColor(Color.gray);
-
-        AffineTransform at
-                    = AffineTransform.getTranslateInstance((w-ew)/2, (h-eh)/2);
-
-        g2d.draw(at.createTransformedShape(e));
-
-//        for (double deg = 0; deg < 360; deg += 5) {
-//            AffineTransform at
-//                    = AffineTransform.getTranslateInstance(w/2, h/2);
-//            at.rotate(Math.toRadians(deg));
-//            g2d.draw(at.createTransformedShape(e));
-//        }
-
-
-    }
-
-
-    private class TAdapter extends KeyAdapter{
+    // Handles inputs
+    private class TAdapter extends KeyAdapter {
         @Override
-        public void keyReleased(KeyEvent e){
-            if (!player.handleRelease(e)){
-
+        public void keyReleased(KeyEvent e) {
+            switch (menu) {
+                case PLAY -> gameEventsPressed(e);
+                case PAUSE -> pauseEventsPressed(e);
+                case OPTIONS -> optionsEventsPressed(e);
             }
         }
-        @Override
-        public void keyPressed(KeyEvent e){
-            if(!player.handlePress(e)){
 
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (menu) {
+                case PLAY -> gameEventsReleased(e);
+                case PAUSE -> pauseEventsReleased(e);
+                case OPTIONS -> optionsEventsReleased(e);
             }
         }
     }
 
-    private enum MenuState{
-        GAME,
+    // Handles inputs while playing
+    private void gameEventsPressed(KeyEvent e) {
+        if (!player.handleRelease(e)) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                menu = State.PAUSE;
+            }
+        }
+    }
+
+    private void gameEventsReleased(KeyEvent e){
+        if (!player.handlePress(e)) {
+
+        }
+    }
+
+    // Handles inputs while in pause menu
+    private void pauseEventsPressed(KeyEvent e){
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+            menu = State.PLAY;
+        }
+    }
+
+    private void pauseEventsReleased(KeyEvent e){
+
+    }
+
+    // Handles inputs while in options menu
+    private void optionsEventsPressed(KeyEvent e){
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+            menu = State.PAUSE;
+        }
+    }
+
+    private void optionsEventsReleased(KeyEvent e){
+
+    }
+
+
+    // Getters and setters
+
+
+    public State getMenu() {
+        return menu;
+    }
+
+    public void setMenu(State menu) {
+        this.menu = menu;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void addToRBS(Rigidbody rb){
+        rbs.add(rb);
+    }
+
+
+
+    // State of the game:
+    // GAME: playing the game
+    // PAUSE: the pause menu
+    // OPTIONS: the options menu
+    protected enum State{
+        PLAY,
         PAUSE,
-        OPTIONS,
+        OPTIONS
     }
 }

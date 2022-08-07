@@ -48,7 +48,6 @@ public class MathVector extends Vector<Double> {
             throw new InvalidParameterException("MathVector subtraction must have the same size");
         }
         MathVector result  = new MathVector();
-        v2 = v2.mult((Double)(-1.0));
         for (int i=0; i<this.size(); i++){
             result.addElement(this.elementAt(i)-v2.elementAt(i));
         }

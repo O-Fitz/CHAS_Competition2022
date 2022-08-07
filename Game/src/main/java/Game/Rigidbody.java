@@ -12,7 +12,8 @@ public class Rigidbody{
     private Dimension size;
     private MathVector pos;
 
-    private MathVector collisionAreaPos;
+
+    private MathVector collisionAreaRelPos;
     private Dimension collisionAreaSize;
 
     private boolean collide = true;
@@ -21,21 +22,21 @@ public class Rigidbody{
     public Rigidbody(){
         size = new Dimension(1, 1);
         pos = new MathVector(0.0, 0.0);
-        collisionAreaPos = pos;
+        collisionAreaRelPos = new MathVector(0.0, 0.0);
         collisionAreaSize = size;
     }
 
     public Rigidbody(Dimension size){
         this.size = size;
         pos = new MathVector(0.0, 0.0);
-        collisionAreaPos = pos;
+        collisionAreaRelPos = new MathVector(0.0, 0.0);
         collisionAreaSize = size;
     }
 
     public Rigidbody(Dimension size, MathVector position){
         this.size = size;
         pos = position;
-        collisionAreaPos = pos;
+        collisionAreaRelPos = new MathVector(0.0, 0.0);
         collisionAreaSize = size;
     }
 
@@ -54,10 +55,10 @@ public class Rigidbody{
         this.size = size;
     }
     public MathVector getCollisionAreaPos() {
-        return collisionAreaPos;
+        return getPos().add(getCollisionAreaRelPos());
     }
     public void setCollisionAreaPos(MathVector collisionAreaPos) {
-        this.collisionAreaPos = collisionAreaPos;
+        this.collisionAreaRelPos = collisionAreaPos.sub(getPos());
     }
     public Dimension getCollisionAreaSize() {
         return collisionAreaSize;
@@ -70,6 +71,15 @@ public class Rigidbody{
     }
     public void setCollide(boolean collide) {
         this.collide = collide;
+    }
+    public MathVector getCollisionAreaRelPos() {
+        return collisionAreaRelPos;
+    }
+    public void setCollisionAreaRelPos(MathVector collisionAreaRelPos) {
+        this.collisionAreaRelPos = collisionAreaRelPos;
+    }
+    public MathVector getMidPos(){
+        return getPos().mult(2.0).add(getSize()).mult(0.5);
     }
 
     protected Graphics2D setupGraphics2D(Graphics g){
@@ -88,17 +98,27 @@ public class Rigidbody{
 
         Graphics2D g2d = setupGraphics2D(g);
 
-        g2d.setStroke(new BasicStroke(1));
+        g2d.setStroke(new BasicStroke(2));
         g2d.setColor(Color.red);
 
         MathVector origin = pos.sub(offset);
 
-        int x = (int)Math.round(origin.getX()*scale.getY());
+        int x = (int)Math.round(origin.getX()*scale.getX());
         int y = (int)Math.round(origin.getY()*scale.getY());
-        int w = (int)Math.round(size.width*scale.getY());
+        int w = (int)Math.round(size.width*scale.getX());
         int h = (int)Math.round(size.height*scale.getY());
         Rectangle img = new Rectangle(x, y, w, h);
+        g2d.draw(img);
 
+        g2d.setStroke(new BasicStroke(1));
+        g2d.setColor(Color.green);
+
+        origin = getCollisionAreaPos().sub(offset);
+        x = (int)Math.round(origin.getX()*scale.getX());
+        y = (int)Math.round(origin.getY()*scale.getY());
+        w = (int)Math.round(getCollisionAreaSize().width*scale.getX());
+        h = (int)Math.round(getCollisionAreaSize().height*scale.getY());
+        img = new Rectangle(x, y, w, h);
         g2d.draw(img);
     }
 

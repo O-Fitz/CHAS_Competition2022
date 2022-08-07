@@ -5,6 +5,7 @@ import Physics.Ray;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DynamicRigidbody extends Rigidbody{
     private MathVector vel;
@@ -51,21 +52,26 @@ public class DynamicRigidbody extends Rigidbody{
 
         for (Rigidbody rb : rbs){
             if (rb.isCollide()){
-                Ray r = new Ray(this.getPos(), this.getVel().mult(time));
+                MathVector offset = new MathVector(0.0, 0.0).add(this.getCollisionAreaSize()).mult(0.5);
+                Ray r = new Ray(this.getPos().add(offset), this.getVel());
                 Side side = RayVsRect(rb, r);
                 switch (side){
-                    case TOP:
-                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY()+rb.getSize().height));
+                    case TOP -> {
+                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY() + rb.getSize().height));
                         this.setVel(new MathVector(this.vel.getX(), Math.max(0, this.vel.getY())));
-                    case BOTTOM:
-                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY()-this.getSize().height));
-                        this.setVel(new MathVector(this.vel.getX(), Math.min(0, this.vel.getY())));
-                    case LEFT:
+                    }
+                    case BOTTOM -> {
+                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY()-this.getSize().getHeight()));
+                        this.setVel(new MathVector(this.getVel().getX(), Math.min(0, this.vel.getY())));
+                    }
+                    case LEFT -> {
                         this.setPos(new MathVector(rb.getPos().getX(), this.getPos().getY()));
                         this.setVel(new MathVector(0.0, this.vel.getY()));
-                    case RIGHT:
-                        this.setPos(new MathVector(rb.getPos().getX()+rb.getSize().width, this.getPos().getY()));
+                    }
+                    case RIGHT  -> {
+                        this.setPos(new MathVector(rb.getPos().getX() + rb.getSize().width, this.getPos().getY()));
                         this.setVel(new MathVector(0.0, this.vel.getY()));
+                    }
                 }
             }
         }
@@ -105,6 +111,10 @@ public class DynamicRigidbody extends Rigidbody{
 
     protected static Side RayVsRect(Rigidbody rb, Ray ray){
 
+        if (Objects.equals(ray.direction, new MathVector(0.0, 0.0))){
+            return Side.NONE;
+        }
+
         MathVector tNear = rb.getCollisionAreaPos().sub(ray.origin);
         tNear.setX(tNear.getX()/ray.direction.getX());
         tNear.setY(tNear.getY()/ray.direction.getY());
@@ -113,13 +123,16 @@ public class DynamicRigidbody extends Rigidbody{
         tFar.setX(tFar.getX()/ray.direction.getX());
         tFar.setY(tFar.getY()/ray.direction.getY());
 
-        if (ray.direction.getX() == 0 & rb.getCollisionAreaPos().getX() == 0){
-            tNear.setX(Double.NEGATIVE_INFINITY);
-            tFar.setX(Double.POSITIVE_INFINITY);
-        }
-        if (ray.direction.getY() == 0){
-            tNear.setY(Double.POSITIVE_INFINITY);
-            tFar.setY(Double.POSITIVE_INFINITY);
+        // Changes NaN to appropriate infinty
+        for (int i=0; i<tNear.size() ;  i++){
+            if (tNear.get(i).isNaN()){
+                if (ray.origin.get(i) >= rb.getCollisionAreaPos().get(i)) tNear.set(i, Double.NEGATIVE_INFINITY);
+                else tNear.set(i, Double.POSITIVE_INFINITY);
+            }
+            if (tFar.get(i).isNaN()){
+                if (ray.origin.get(i) >= rb.getCollisionAreaPos().get(i)) tFar.set(i, Double.NEGATIVE_INFINITY);
+                else tFar.set(i, Double.POSITIVE_INFINITY);
+            }
         }
 
         if (tNear.getX() > tFar.getX()) tNear.swap(tFar, 0);
@@ -127,35 +140,22 @@ public class DynamicRigidbody extends Rigidbody{
 
         if (tNear.getX() > tFar.getY() || tNear.getY() > tFar.getX()) return Side.NONE;
 
-        double tHitNear = Math.max(tNear.getX(), tFar.getY());
-        double tHitFar = Math.max(tFar.getX(), tNear.getY());
+        double tHitNear = Math.max(tNear.getX(), tNear.getY());
+        double tHitFar = Math.min(tFar.getX(), tFar.getY());
 
-        if (tHitFar < 0 || tHitNear > 1) return Side.NONE;
+        if (tHitFar < 0  || tHitNear > 1) return Side.NONE;
 
         if (tNear.getX() > tNear.getY()){
             if (ray.direction.getX() < 0) return Side.RIGHT;
             else return Side.LEFT;
         } else if (tNear.getX() < tNear.getY()){
-            if (ray.direction.getY() < 0) return Side.BOTTOM;
-            else return Side.TOP;
+            if (ray.direction.getY() < 0) return Side.TOP;
+            else return Side.BOTTOM;
         }
         else{
             return Side.NONE;
         }
 
-    }
-
-
-    // Checks if a line (a point and a length) would collide with another line
-    // Works if lines going in same direction, ignores perpendicular axis
-    private boolean withinBound(double pos1, double length1, double pos2, double length2){
-
-        if (length1 > length2){
-            return (pos1 < pos2 & pos2 < pos1+length1) || (pos1 < pos2+length2 & pos2+length2 < pos1+length1);
-        }
-        else{
-            return (pos2 < pos1 & pos1 < pos2+length2) || (pos2 < pos1+length1 & pos1+length1 < pos2+length2);
-        }
     }
 
     @Override
@@ -167,9 +167,9 @@ public class DynamicRigidbody extends Rigidbody{
 
         MathVector origin = getPos().sub(offset);
 
-        int x = (int)Math.round(origin.getX()*scale.getY());
+        int x = (int)Math.round(origin.getX()*scale.getX());
         int y = (int)Math.round(origin.getY()*scale.getY());
-        int w = (int)Math.round(getSize().width*scale.getY());
+        int w = (int)Math.round(getSize().width*scale.getX());
         int h = (int)Math.round(getSize().height*scale.getY());
         Rectangle img = new Rectangle(x, y, w, h);
 
@@ -179,7 +179,7 @@ public class DynamicRigidbody extends Rigidbody{
     @Override
     public void update(int delay, ArrayList<Rigidbody> rbs) {
 
-        double time = delay/10;
+        double time = (double)delay/10;
 
         if (updateBuffer > 0) {
             updateBuffer -= 1;
@@ -196,10 +196,13 @@ public class DynamicRigidbody extends Rigidbody{
         move(time);
         checkCollisions(rbs, time);
 
+
+
     }
 
     private void move(double time) {
         setPos(getPos().add(vel.mult(time)));
+        setCollisionAreaPos(getCollisionAreaPos().add(vel.mult(time)));
     }
 
 }
