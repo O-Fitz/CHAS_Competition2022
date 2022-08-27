@@ -94,7 +94,7 @@ public class Rigidbody{
         return g2d;
     }
 
-    public void render(Graphics g, MathVector offset, MathVector scale){
+    public void render(Graphics g, MathVector offset, MathVector scale, Color... color){
 
         Graphics2D g2d = setupGraphics2D(g);
 

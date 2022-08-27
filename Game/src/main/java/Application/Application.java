@@ -20,7 +20,7 @@ public class Application extends JFrame{
 
     private Level level = new Level1();
 
-    private GameState gamestate = GameState.HOME;
+    private GameState gamestate = GameState.PLAY;
 
 
     public Application(){

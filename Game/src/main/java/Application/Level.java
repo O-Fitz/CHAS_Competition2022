@@ -1,9 +1,11 @@
 package Application;
 
+import Game.Enemy;
 import Game.Player;
 import Game.Rigidbody;
 import Physics.MathVector;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.*;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 public abstract class Level extends JPanel implements ActionListener{
 
     private ArrayList<Rigidbody> rbs = new ArrayList<Rigidbody>();
+    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private Player player;
     private Timer timer;
     private final int DELAY = 15;
@@ -71,10 +74,14 @@ public abstract class Level extends JPanel implements ActionListener{
         calculateOffset(screensize);
 
         for (Rigidbody rb : rbs) {
-            rb.render(g, offset, scale);
+            rb.render(g, offset, scale); 
         }
 
-        player.render(g, offset, scale);
+        for (Enemy enemy : enemies) {
+            enemy.render(g, offset, scale, Color.RED);
+        }
+
+        player.render(g, offset, scale, Color.BLUE);
     }
 
     // Renders the pause menu
@@ -87,6 +94,10 @@ public abstract class Level extends JPanel implements ActionListener{
 
     private void update(){
         player.update(timer.getDelay(), rbs);
+        
+        for (Enemy enemy : enemies) {
+            enemy.update(timer.getDelay(), rbs);
+        }
     }
 
 
@@ -197,6 +208,10 @@ public abstract class Level extends JPanel implements ActionListener{
 
     public void addToRBS(Rigidbody rb){
         rbs.add(rb);
+    }
+
+    public void addEnemy(Enemy enemy){
+        enemies.add(enemy);
     }
 
 

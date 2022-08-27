@@ -20,18 +20,22 @@ public class MainMenu extends JPanel {
 
         JButton playButton = new JButton("Play");
 
+        playButton.setPreferredSize(new Dimension(100, 100));
+
         JButton quitButton = new JButton("Quit Game");
         quitButton.addActionListener((event)-> System.exit(0));
         quitButton.setPreferredSize(new Dimension(100, 100));
 
         gl.setHorizontalGroup(gl.createSequentialGroup()
                 .addPreferredGap(RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(quitButton));
+                .addComponent(quitButton)
+                .addComponent(playButton));
 
         gl.setVerticalGroup(gl.createSequentialGroup()
                 .addPreferredGap(RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(gl.createParallelGroup()
-                        .addComponent(quitButton))
+                        .addComponent(quitButton)
+                        .addComponent(playButton))
         );
 
         this.setLayout(gl);
