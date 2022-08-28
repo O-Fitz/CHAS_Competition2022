@@ -85,6 +85,9 @@ public class Rigidbody{
     public void render(Graphics2D g2d, MathVector offset, MathVector scale){
 
 
+    public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
+
+
         g2d.setStroke(new BasicStroke(2));
         g2d.setColor(Color.red);
 

@@ -1,10 +1,13 @@
 package Application;
 
+import Game.Enemy;
 import Game.Player;
 import Game.Rigidbody;
 import Physics.MathVector;
 
+
 import java.awt.*;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 public abstract class Level extends JPanel{
 
     private ArrayList<Rigidbody> rbs = new ArrayList<Rigidbody>();
+    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private Player player;
 
 
@@ -48,19 +52,30 @@ public abstract class Level extends JPanel{
     }
 
     // Renders the level, all of the rigidbodies and the player
+
     public void renderLevel(Graphics2D g2d, Dimension screensize, MathVector scale, double scaleBy){
 
-        calculateOffset(screensize, scaleBy);
+        //Dimension screensize = getSize();
+        //scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
+        calculateOffset(screensize);
 
         for (Rigidbody rb : rbs) {
-            rb.render(g2d, offset, scale);
+            rb.render(g, offset, scale); 
         }
 
-        player.render(g2d, offset, scale);
+        for (Enemy enemy : enemies) {
+            enemy.render(g, offset, scale, Color.RED);
+        }
+
+        player.render(g, offset, scale, Color.BLUE);
     }
 
     public void update(int delay){
         player.update(delay, rbs);
+        for (Enemy enemy : enemies) {
+            enemy.update(timer.getDelay(), rbs);
+            //enemy.shoot(player.getPos());
+        }
     }
 
 
@@ -120,4 +135,7 @@ public abstract class Level extends JPanel{
         rbs.add(rb);
     }
 
+    public void addEnemy(Enemy enemy){
+        enemies.add(enemy);
+    }
 }

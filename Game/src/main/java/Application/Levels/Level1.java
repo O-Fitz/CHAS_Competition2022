@@ -1,5 +1,6 @@
 package Application.Levels;
 
+import Game.Enemy;
 import Game.Player;
 import Game.Rigidbody;
 import Physics.MathVector;
@@ -21,6 +22,7 @@ public class Level1 extends Application.Level {
         Player player = new Player(new Dimension(1, 1), new MathVector(0.0, 0.0), 20);
         setPlayer(player);
 
-
+        Enemy enemy1 = new Enemy(new Dimension(1, 1), new MathVector(10.0, 0.0), 20);
+        addEnemy(enemy1);
     }
 }

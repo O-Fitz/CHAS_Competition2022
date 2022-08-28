@@ -159,10 +159,12 @@ public class DynamicRigidbody extends Rigidbody{
     }
 
     @Override
-    public void render(Graphics2D g2d, MathVector offset, MathVector scale){
+
+    public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
+
 
         g2d.setStroke(new BasicStroke(1));
-        g2d.setColor(Color.blue);
+        g2d.setColor(color[0]);
 
         MathVector origin = getPos().sub(offset);
 

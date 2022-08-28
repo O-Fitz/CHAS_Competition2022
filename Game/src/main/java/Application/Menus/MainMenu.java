@@ -17,6 +17,7 @@ public class MainMenu extends Application.Menu{
 
     }
 
+
     @Override
     public ChangeEvent keyPressed(KeyEvent e){
         ChangeEvent event = new ChangeEvent();

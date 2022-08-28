@@ -13,7 +13,9 @@ import javax.swing.*;
 
 public class Application extends JFrame implements ActionListener {
 
+
     Renderer renderer;
+
 
     private Timer timer;
     private final int DELAY = 15;
@@ -25,11 +27,13 @@ public class Application extends JFrame implements ActionListener {
     private MainMenu home;
     private OptionsMenu options;
 
+
     private GameState gamestate;
     private ArrayList<GameState> lastGamestates = new ArrayList<GameState>();
 
     final static int WIDTH = 1000;
     final static int HEIGHT = 750;
+
 
 
     public Application(){
@@ -113,6 +117,7 @@ public class Application extends JFrame implements ActionListener {
                 case PAUSE -> {event = pause.keyReleased(e);}
                 case PLAY ->{event = level.keyReleased(e);}
             }
+
             handleChangeEvent(event);
         }
 
@@ -140,6 +145,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {}
                 case PAUSE -> {}
                 case PLAY ->{}
+
             }
             handleChangeEvent(event);
         }
