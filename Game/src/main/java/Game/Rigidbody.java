@@ -82,8 +82,6 @@ public class Rigidbody{
         return getPos().mult(2.0).add(getSize()).mult(0.5);
     }
 
-    public void render(Graphics2D g2d, MathVector offset, MathVector scale){
-
 
     public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
 

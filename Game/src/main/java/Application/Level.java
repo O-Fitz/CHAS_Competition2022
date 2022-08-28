@@ -57,23 +57,23 @@ public abstract class Level extends JPanel{
 
         //Dimension screensize = getSize();
         //scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
-        calculateOffset(screensize);
+        calculateOffset(screensize, scaleBy);
 
         for (Rigidbody rb : rbs) {
-            rb.render(g, offset, scale); 
+            rb.render(g2d, offset, scale);
         }
 
         for (Enemy enemy : enemies) {
-            enemy.render(g, offset, scale, Color.RED);
+            enemy.render(g2d, offset, scale, Color.RED);
         }
 
-        player.render(g, offset, scale, Color.BLUE);
+        player.render(g2d, offset, scale, Color.BLUE);
     }
 
     public void update(int delay){
         player.update(delay, rbs);
         for (Enemy enemy : enemies) {
-            enemy.update(timer.getDelay(), rbs);
+            enemy.update(delay, rbs);
             //enemy.shoot(player.getPos());
         }
     }
