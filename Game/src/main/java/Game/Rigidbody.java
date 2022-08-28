@@ -82,21 +82,8 @@ public class Rigidbody{
         return getPos().mult(2.0).add(getSize()).mult(0.5);
     }
 
-    protected Graphics2D setupGraphics2D(Graphics g){
-        Graphics2D g2d = (Graphics2D) g;
-        RenderingHints rh = new RenderingHints(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
-        );
+    public void render(Graphics2D g2d, MathVector offset, MathVector scale){
 
-        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHints(rh);
-        return g2d;
-    }
-
-    public void render(Graphics g, MathVector offset, MathVector scale){
-
-        Graphics2D g2d = setupGraphics2D(g);
 
         g2d.setStroke(new BasicStroke(2));
         g2d.setColor(Color.red);

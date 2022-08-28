@@ -4,13 +4,9 @@ import Game.Player;
 import Game.Rigidbody;
 import Physics.MathVector;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 // An abstract class that all levels extend
@@ -20,9 +16,8 @@ public abstract class Level extends JPanel{
     private ArrayList<Rigidbody> rbs = new ArrayList<Rigidbody>();
     private Player player;
 
-    double scaleBy = 40;
+
     MathVector offset = new MathVector(0.0, 0.0);
-    MathVector scale = new MathVector(0.0, 0.0);
 
     public Level(){
 
@@ -36,7 +31,7 @@ public abstract class Level extends JPanel{
 
     }
 
-    void calculateOffset(Dimension screensize){
+    void calculateOffset(Dimension screensize, double scaleBy){
 
         double buffer = 2.5;
 
@@ -53,16 +48,15 @@ public abstract class Level extends JPanel{
     }
 
     // Renders the level, all of the rigidbodies and the player
-    public void renderLevel(Graphics g){
-        Dimension screensize = getSize();
-        scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
-        calculateOffset(screensize);
+    public void renderLevel(Graphics2D g2d, Dimension screensize, MathVector scale, double scaleBy){
+
+        calculateOffset(screensize, scaleBy);
 
         for (Rigidbody rb : rbs) {
-            rb.render(g, offset, scale);
+            rb.render(g2d, offset, scale);
         }
 
-        player.render(g, offset, scale);
+        player.render(g2d, offset, scale);
     }
 
     public void update(int delay){
@@ -71,20 +65,49 @@ public abstract class Level extends JPanel{
 
 
     // Handles inputs while playing
-    public void gameEventsPressed(KeyEvent e) {
-        if (!player.handleRelease(e)) {
+    public ChangeEvent keyPressed(KeyEvent e) {
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        if (player.handlePress(e)) {
 
         }
+        else{
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ESCAPE){
+                event.type = ChangeEvent.eventType.MENU_CHANGE;
+                event.menu = Application.GameState.PAUSE;
+            }
+        }
+        return event;
     }
 
-    public void gameEventsReleased(KeyEvent e){
-        if (!player.handlePress(e)) {
+    public ChangeEvent keyReleased(KeyEvent e){
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        if (player.handleRelease(e)) {
 
         }
+        else{
+            int key = e.getKeyCode();
+
+        }
+        return event;
     }
 
-    // Handles inputs while in pause menu
+    public ChangeEvent mouseClicked(MouseEvent me){
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        return event;
+    }
 
+    public ChangeEvent mouseReleased(MouseEvent me){
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        return event;
+    }
+
+
+    // Getters and Setters
     public Player getPlayer() {
         return player;
     }
