@@ -10,7 +10,7 @@ import javax.swing.*;
 
 public class Application extends JFrame{
 
-    JPanel level1 = new Level1();
+    Level level1 = new Level1();
     JPanel home = new MainMenu();
     JPanel options = new Options();
 
@@ -18,7 +18,7 @@ public class Application extends JFrame{
 
 
 
-    private Level level = new Level1();
+    //private Level level = new Level1();
 
     private GameState gamestate = GameState.PLAY;
 
@@ -55,7 +55,7 @@ public class Application extends JFrame{
             case PLAY -> {
                 CardLayout c1 = (CardLayout) cards.getLayout();
                 c1.show(cards, gamestate.name());
-                level.setMenu(Level.State.PLAY);
+                level1.setMenu(Level.State.PLAY);
             }
             case OPTIONS -> {
                 CardLayout c1 = (CardLayout) cards.getLayout();

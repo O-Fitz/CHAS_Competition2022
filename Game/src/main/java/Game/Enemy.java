@@ -5,6 +5,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Enemy extends Entity {
+
+    private int shootCooldown = 0;
     
     public Enemy() {
         super();
@@ -26,4 +28,23 @@ public class Enemy extends Entity {
         super(size, position, velocity, maxHealth);
     }
 
+
+    public void shoot(MathVector playerPos){
+        if(shootCooldown < 1){
+            shootCooldown = 200;
+            
+        }
+    }
+
+    @Override
+    public void update(int delay, ArrayList<Rigidbody> rbs){
+        super.update(delay, rbs);
+
+        if (shootCooldown > 0){
+            shootCooldown--;
+        }
+    }
+
+
 }
+

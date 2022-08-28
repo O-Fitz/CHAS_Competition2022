@@ -24,8 +24,5 @@ public class Level1 extends Application.Level {
 
         Enemy enemy1 = new Enemy(new Dimension(1, 1), new MathVector(10.0, 0.0), 20);
         addEnemy(enemy1);
-
-
-
     }
 }

@@ -97,6 +97,7 @@ public abstract class Level extends JPanel implements ActionListener{
         
         for (Enemy enemy : enemies) {
             enemy.update(timer.getDelay(), rbs);
+            //enemy.shoot(player.getPos());
         }
     }
 
