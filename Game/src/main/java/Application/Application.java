@@ -2,28 +2,37 @@ package Application;
 
 import Application.Levels.Level1;
 import Application.Menus.MainMenu;
-import Application.Menus.Options;
-import com.sun.tools.javac.Main;
+import Application.Menus.OptionsMenu;
+import Application.Menus.PauseMenu;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 
-public class Application extends JFrame{
+public class Application extends JFrame implements ActionListener {
 
-    JPanel level1 = new Level1();
-    JPanel home = new MainMenu();
-    JPanel options = new Options();
+    Renderer renderer;
 
-    JPanel cards = new JPanel(new CardLayout());
+    private Timer timer;
+    private final int DELAY = 15;
 
-
-
-    private Level level = new Level1();
-
-    private GameState gamestate = GameState.HOME;
+    private Level level;
+    private GameState gamestate;
 
 
     public Application(){
+
+        addKeyListener(new TAdapter());
+        setFocusable(true);
+        timer = new Timer(DELAY, this);
+        timer.start();
+
+        level = new Level1();
+        gamestate = GameState.PLAY;
+
         initUI();
     }
 
@@ -36,32 +45,17 @@ public class Application extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        cards.add(level1, GameState.PLAY.name());
-        cards.add(home, GameState.HOME.name());
-        cards.add(options, GameState.OPTIONS.name());
+        setVisible(true);
 
-        add(cards);
-
+        renderer = new Renderer(level, gamestate);
+        renderer.setVisible(true);
+        add(renderer);
 
     }
 
     private void gameloop(){
 
-        switch (gamestate){
-            case HOME -> {
-                CardLayout c1 = (CardLayout) cards.getLayout();
-                c1.show(cards,  gamestate.name());
-            }
-            case PLAY -> {
-                CardLayout c1 = (CardLayout) cards.getLayout();
-                c1.show(cards, gamestate.name());
-                level.setMenu(Level.State.PLAY);
-            }
-            case OPTIONS -> {
-                CardLayout c1 = (CardLayout) cards.getLayout();
-                c1.show(cards,  gamestate.name());
-            }
-        }
+
 
     }
 
@@ -74,9 +68,48 @@ public class Application extends JFrame{
         });
     }
 
-    private enum GameState{
+    // Is performed every DELAY ms
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (gamestate){
+            case HOME -> {}
+            case OPTIONS -> {}
+            case PAUSE -> {}
+            case PLAY ->{level.update(timer.getDelay());}
+        }
+        renderer.update(level, gamestate);
+        renderer.repaint();
+
+    }
+
+    // Handles inputs
+    private class TAdapter extends KeyAdapter {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            switch (gamestate){
+                case HOME -> {}
+                case OPTIONS -> {}
+                case PAUSE -> {}
+                case PLAY ->{level.gameEventsPressed(e);}
+            }
+        }
+
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (gamestate){
+                case HOME -> {}
+                case OPTIONS -> {}
+                case PAUSE -> {}
+                case PLAY ->{level.gameEventsReleased(e);}
+            }
+        }
+    }
+
+    protected enum GameState{
         HOME,
         OPTIONS,
+        PAUSE,
         PLAY
     }
 }

@@ -2,9 +2,9 @@ package Application.Menus;
 
 import javax.swing.*;
 
-public class Pause extends JPanel {
+public class PauseMenu extends JPanel {
 
-    public Pause(){
+    public PauseMenu(){
 
     }
 
