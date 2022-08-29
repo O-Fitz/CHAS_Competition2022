@@ -200,7 +200,7 @@ public class DynamicRigidbody extends Rigidbody{
 
     }
 
-    private void move(double time) {
+    protected void move(double time) {
         setPos(getPos().add(vel.mult(time)));
         setCollisionAreaPos(getCollisionAreaPos().add(vel.mult(time)));
     }

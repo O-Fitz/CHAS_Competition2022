@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Enemy extends Entity {
 
-    private int shootCooldown = 0;
+    private int shootCooldown = 200;
     
     public Enemy() {
         super();
@@ -29,11 +29,13 @@ public class Enemy extends Entity {
     }
 
 
-    public void shoot(MathVector playerPos){
-        if(shootCooldown < 1){
+    public Projectile shoot(MathVector playerPos){
+        if(shootCooldown == 0){
+            Projectile shot = new Projectile(new Dimension(1,1), new MathVector(this.getPos().getX(),this.getPos().getY()), new MathVector(0.1,-0.1), 1);
             shootCooldown = 200;
-            
+            return shot;
         }
+        return null;
     }
 
     @Override

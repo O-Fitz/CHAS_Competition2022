@@ -2,6 +2,7 @@ package Application;
 
 import Game.Enemy;
 import Game.Player;
+import Game.Projectile;
 import Game.Rigidbody;
 import Physics.MathVector;
 
@@ -21,6 +22,7 @@ public abstract class Level extends JPanel implements ActionListener{
 
     private ArrayList<Rigidbody> rbs = new ArrayList<Rigidbody>();
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    private ArrayList<Projectile> projs = new ArrayList<Projectile>();
     private Player player;
     private Timer timer;
     private final int DELAY = 15;
@@ -81,6 +83,19 @@ public abstract class Level extends JPanel implements ActionListener{
             enemy.render(g, offset, scale, Color.RED);
         }
 
+        for (int i=0; i<projs.size(); i++) {
+            if(projs.get(i).collided == true){
+                projs.remove(i);
+            }
+            try{
+                projs.get(i).render(g, offset, scale, Color.RED);
+            } catch(IndexOutOfBoundsException e){
+                
+            }
+            
+            
+        }
+
         player.render(g, offset, scale, Color.BLUE);
     }
 
@@ -97,9 +112,17 @@ public abstract class Level extends JPanel implements ActionListener{
         
         for (Enemy enemy : enemies) {
             enemy.update(timer.getDelay(), rbs);
-            //enemy.shoot(player.getPos());
+            Projectile proj = enemy.shoot(player.getPos());
+            if (proj != null){
+                addProj(proj);
+            }
+        }
+        
+        for (Projectile proj : projs){
+            proj.update(timer.getDelay(), rbs); 
         }
     }
+    
 
 
     // Called every frame to paint the screen
@@ -213,6 +236,10 @@ public abstract class Level extends JPanel implements ActionListener{
 
     public void addEnemy(Enemy enemy){
         enemies.add(enemy);
+    }
+
+    public void addProj(Projectile proj){
+        projs.add(proj);
     }
 
 
