@@ -6,40 +6,26 @@ import Game.Projectile;
 import Game.Rigidbody;
 import Physics.MathVector;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+
+import java.awt.*;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 // An abstract class that all levels extend
 // Allows all levels to have the same base functionality and have unique level design
-public abstract class Level extends JPanel implements ActionListener{
+public abstract class Level extends JPanel{
 
     private ArrayList<Rigidbody> rbs = new ArrayList<Rigidbody>();
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private ArrayList<Projectile> projs = new ArrayList<Projectile>();
     private Player player;
-    private Timer timer;
-    private final int DELAY = 15;
-    private State menu;
 
 
-
-    double scaleBy = 40;
     MathVector offset = new MathVector(0.0, 0.0);
-    MathVector scale = new MathVector(0.0, 0.0);
 
     public Level(){
-        addKeyListener(new TAdapter());
-        setFocusable(true);
-        timer = new Timer(DELAY, this);
-        timer.start();
-        menu = State.PLAY;
 
         // Sets up level design
         initLevel();
@@ -51,8 +37,7 @@ public abstract class Level extends JPanel implements ActionListener{
 
     }
 
-    void calculateOffset(Dimension screensize){
-
+    void calculateOffset(Dimension screensize, double scaleBy){
 
         double buffer = 2.5;
 
@@ -66,21 +51,22 @@ public abstract class Level extends JPanel implements ActionListener{
 
         offset.setY(player.getMidPos().getY()-(double)screensize.height/(scaleBy));
 
-
     }
 
     // Renders the level, all of the rigidbodies and the player
-    private void renderLevel(Graphics g){
-        Dimension screensize = getSize();
-        scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
-        calculateOffset(screensize);
+
+    public void renderLevel(Graphics2D g2d, Dimension screensize, MathVector scale, double scaleBy){
+
+        //Dimension screensize = getSize();
+        //scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
+        calculateOffset(screensize, scaleBy);
 
         for (Rigidbody rb : rbs) {
-            rb.render(g, offset, scale); 
+            rb.render(g2d, offset, scale);
         }
 
         for (Enemy enemy : enemies) {
-            enemy.render(g, offset, scale, Color.RED);
+            enemy.render(g2d, offset, scale, Color.RED);
         }
 
         for (int i=0; i<projs.size(); i++) {
@@ -88,7 +74,7 @@ public abstract class Level extends JPanel implements ActionListener{
                 projs.remove(i);
             }
             try{
-                projs.get(i).render(g, offset, scale, Color.RED);
+                projs.get(i).render(g2d, offset, scale, Color.RED);
             } catch(IndexOutOfBoundsException e){
                 
             }
@@ -96,22 +82,14 @@ public abstract class Level extends JPanel implements ActionListener{
             
         }
 
-        player.render(g, offset, scale, Color.BLUE);
+        player.render(g2d, offset, scale, Color.BLUE);
     }
+            
 
-    // Renders the pause menu
-    // TODO: Create pause menu
-    private void renderPause(Graphics g){}
-
-    // Renders the options menu
-    // TODO: Create options menu, should be accessible from pause menu and home screen
-    private void renderOptions(Graphics g){}
-
-    private void update(){
-        player.update(timer.getDelay(), rbs);
-        
+    public void update(int delay){
+        player.update(delay, rbs);
         for (Enemy enemy : enemies) {
-            enemy.update(timer.getDelay(), rbs);
+            enemy.update(delay, rbs);
             Projectile proj = enemy.shoot(player.getPos());
             if (proj != null){
                 addProj(proj);
@@ -119,109 +97,56 @@ public abstract class Level extends JPanel implements ActionListener{
         }
         
         for (Projectile proj : projs){
-            proj.update(timer.getDelay(), rbs); 
+            proj.update(delay, rbs); 
         }
     }
     
 
 
-    // Called every frame to paint the screen
-    @Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-
-        switch (menu){
-            case PLAY->     renderLevel(g);
-            case PAUSE->    renderPause(g);
-            case OPTIONS->  renderOptions(g);
-        }
-
-    }
-
-    // Is performed every DELAY ms
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        switch (menu){
-            case PLAY -> {
-                update();
-            }
-            case PAUSE -> {}
-            case OPTIONS -> {}
-        }
-        repaint();
-    }
-
-    // Handles inputs
-    private class TAdapter extends KeyAdapter {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            switch (menu) {
-                case PLAY -> gameEventsPressed(e);
-                case PAUSE -> pauseEventsPressed(e);
-                case OPTIONS -> optionsEventsPressed(e);
-            }
-        }
-
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            switch (menu) {
-                case PLAY -> gameEventsReleased(e);
-                case PAUSE -> pauseEventsReleased(e);
-                case OPTIONS -> optionsEventsReleased(e);
-            }
-        }
-    }
-
     // Handles inputs while playing
-    private void gameEventsPressed(KeyEvent e) {
-        if (!player.handleRelease(e)) {
-            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                menu = State.PAUSE;
+    public ChangeEvent keyPressed(KeyEvent e) {
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        if (player.handlePress(e)) {
+
+        }
+        else{
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ESCAPE){
+                event.type = ChangeEvent.eventType.MENU_CHANGE;
+                event.menu = Application.GameState.PAUSE;
             }
         }
+        return event;
     }
 
-    private void gameEventsReleased(KeyEvent e){
-        if (!player.handlePress(e)) {
+    public ChangeEvent keyReleased(KeyEvent e){
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        if (player.handleRelease(e)) {
 
         }
-    }
+        else{
+            int key = e.getKeyCode();
 
-    // Handles inputs while in pause menu
-    private void pauseEventsPressed(KeyEvent e){
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
-            menu = State.PLAY;
         }
+        return event;
     }
 
-    private void pauseEventsReleased(KeyEvent e){
-
+    public ChangeEvent mouseClicked(MouseEvent me){
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        return event;
     }
 
-    // Handles inputs while in options menu
-    private void optionsEventsPressed(KeyEvent e){
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
-            menu = State.PAUSE;
-        }
-    }
-
-    private void optionsEventsReleased(KeyEvent e){
-
+    public ChangeEvent mouseReleased(MouseEvent me){
+        ChangeEvent event = new ChangeEvent();
+        event.type = ChangeEvent.eventType.NONE;
+        return event;
     }
 
 
-    // Getters and setters
-
-
-    public State getMenu() {
-        return menu;
-    }
-
-    public void setMenu(State menu) {
-        this.menu = menu;
-    }
-
+    // Getters and Setters
     public Player getPlayer() {
         return player;
     }
