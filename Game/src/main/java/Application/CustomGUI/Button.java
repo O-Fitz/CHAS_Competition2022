@@ -1,10 +1,11 @@
 package Application.CustomGUI;
 
+import Application.ChangeEvent;
 import Physics.MathVector;
 
 import java.awt.*;
 
-public class Button <E>{
+public class Button {
 
     private Point position;
     private Dimension size;
@@ -12,40 +13,49 @@ public class Button <E>{
     private String text;
     private Dimension textBuffer;
 
+    private Color textColor;
+    private Color hoverTextColor;
     private Color color;
     private Color hoverColor;
     private boolean hover;
 
-    private VoidFuctionCall<E> function;
+    private FuctionCall function;
 
     public Button(){
 
     }
 
-    public Button(Dimension position, Dimension size, String text, VoidFuctionCall<E> fun) {
+    public Button(Dimension position, Dimension size, String text, FuctionCall fun) {
         this.position = new Point((int)position.getWidth(), (int)position.getHeight());
         this.size = size;
         this.text = text;
         this.function = fun;
 
         this.textBuffer = new Dimension(0, 0);
-        this.color = new Color(1, 0, 0, 1);
-        this.hoverColor = new Color(0, 1, 0, 1);
+
+        this.color = new Color(255, 0, 0);
+        this.hoverColor = new Color(0, 255, 0);
+
+        this.textColor = new Color(0, 0, 0);
+        this.hoverTextColor = new Color(0, 0, 0);
     }
 
-    public Button(Point position, Dimension size, String text, VoidFuctionCall<E> fun) {
+    public Button(Point position, Dimension size, String text, FuctionCall fun) {
         this.position = position;
         this.size = size;
         this.text = text;
         this.function = fun;
 
-        this.textBuffer = new Dimension(0, 0);
+        this.textBuffer = new Dimension((size.width-text.length())/2, size.height/20);
         this.color = new Color(255, 0, 0, 255);
         this.hoverColor = new Color(0, 255, 0, 255);
+
+        this.textColor = new Color(0, 0, 0);
+        this.hoverTextColor = new Color(0, 0, 0);
     }
 
-    public void onPress(E ev){
-        function.operation(ev);
+    public ChangeEvent onPress(){
+        return function.op();
     }
 
     public boolean isHoveredOver(Point mousePos){
@@ -63,6 +73,33 @@ public class Button <E>{
     public boolean isHoveredOver(Dimension mousePos){
         return (position.getX() <= mousePos.width) && (mousePos.width <= position.getX()+size.width)
                 && (position.getY() <= mousePos.height) && (mousePos.height <= position.getY()+size.height);
+    }
+
+    public void render(Graphics2D g2d, MathVector scale){
+        Point pos = new Point(getPosition());
+        pos.x *= scale.getY();
+        pos.y *= scale.getY();
+
+        Dimension size = new Dimension(getSize());
+        size.width *= scale.getY();
+        size.height *= scale.getY();
+
+        Rectangle rect = new Rectangle(pos, size);
+
+        g2d.setStroke(new BasicStroke(1));
+        g2d.setColor(getVisibleColor());
+        g2d.fill(rect);
+
+        g2d.setColor(getVisibleTextColor());
+        Font font = new Font("Dialog.plain", Font.PLAIN, size.height/4);
+        g2d.setFont(font);
+        //Font font = g2d.getFont();
+        //System.out.println(font.getFontName());
+        pos.x += textBuffer.width*scale.getY();
+        pos.y += font.getSize() + textBuffer.height*scale.getY();
+        g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+
+        //g2d.draw();
     }
 
 
@@ -127,4 +164,24 @@ public class Button <E>{
         return (hover) ? hoverColor : color;
     }
 
+    public Color getVisibleTextColor(){
+        //return (hover) ? hoverTextColor : textColor;
+        return this.textColor;
+    }
+
+    public Color getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
+    }
+
+    public Color getHoverTextColor() {
+        return hoverTextColor;
+    }
+
+    public void setHoverTextColor(Color hoverTextColor) {
+        this.hoverTextColor = hoverTextColor;
+    }
 }

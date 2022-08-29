@@ -5,6 +5,14 @@ public class ChangeEvent {
     public Application.GameState menu;
     public eventType type;
 
+    public ChangeEvent(){
+
+    }
+
+    public ChangeEvent(eventType type){
+        this.type = type;
+    }
+
     public enum eventType{
         NONE,
         LEVEL_CHANGE,
