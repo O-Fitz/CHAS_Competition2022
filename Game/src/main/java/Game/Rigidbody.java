@@ -36,8 +36,8 @@ public class Rigidbody{
     public Rigidbody(Dimension size, MathVector position){
         this.size = size;
         pos = position;
-        collisionAreaRelPos = new MathVector(0.0, 0.0);
-        collisionAreaSize = size;
+        collisionAreaRelPos = new MathVector(-0.5, -0.5);
+        collisionAreaSize = new Dimension(size.width+1, size.height+1);
     }
 
 
@@ -111,6 +111,10 @@ public class Rigidbody{
     }
 
     public void update(int delay, ArrayList<Rigidbody> rbs){
+
+    }
+
+    protected void onProjectileCollision(Projectile proj){
 
     }
 

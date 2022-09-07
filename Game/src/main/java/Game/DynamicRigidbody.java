@@ -52,8 +52,7 @@ public class DynamicRigidbody extends Rigidbody{
 
         for (Rigidbody rb : rbs){
             if (rb.isCollide()){
-                MathVector offset = new MathVector(0.0, 0.0).add(this.getCollisionAreaSize()).mult(0.5);
-                Ray r = new Ray(this.getPos().add(offset), this.getVel());
+                Ray r = new Ray(this.getMidPos(), this.getVel());
                 Side side = RayVsRect(rb, r);
                 switch (side){
                     case TOP -> {
@@ -75,7 +74,6 @@ public class DynamicRigidbody extends Rigidbody{
                 }
             }
         }
-
     }
 
     protected static boolean pointInRect(Rigidbody rb, MathVector point){
@@ -203,7 +201,7 @@ public class DynamicRigidbody extends Rigidbody{
 
     protected void move(double time) {
         setPos(getPos().add(vel.mult(time)));
-        setCollisionAreaPos(getCollisionAreaPos().add(vel.mult(time)));
+        //setCollisionAreaPos(getCollisionAreaPos().add(vel.mult(time)));
     }
 
 }

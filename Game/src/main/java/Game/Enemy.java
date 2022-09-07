@@ -6,8 +6,9 @@ import java.util.ArrayList;
 
 public class Enemy extends Entity {
 
-    private int shootCooldown = 200;
-    
+    private int shootCooldownReset = 200;
+    private int shootCooldown = shootCooldownReset;
+
     public Enemy() {
         super();
     }
@@ -31,8 +32,11 @@ public class Enemy extends Entity {
 
     public Projectile shoot(MathVector playerPos){
         if(shootCooldown == 0){
-            Projectile shot = new Projectile(new Dimension(1,1), new MathVector(this.getPos().getX(),this.getPos().getY()), new MathVector(0.1,-0.1), 1);
-            shootCooldown = 200;
+            MathVector vel = new MathVector(0.1,-0.1);
+            MathVector pos = new MathVector(this.getPos().getX(),this.getPos().getY()).add(vel.normalise());
+
+            Projectile shot = new Projectile(new Dimension(1,1), pos, vel, 1);
+            shootCooldown = shootCooldownReset;
             return shot;
         }
         return null;

@@ -70,15 +70,12 @@ public abstract class Level extends JPanel{
         }
 
         for (int i=0; i<projs.size(); i++) {
-            if(projs.get(i).collided == true){
+            if(projs.get(i).collided){
                 projs.remove(i);
             }
-            try{
+            else{
                 projs.get(i).render(g2d, offset, scale, Color.RED);
-            } catch(IndexOutOfBoundsException e){
-                
             }
-            
             
         }
 
@@ -88,6 +85,7 @@ public abstract class Level extends JPanel{
 
     public void update(int delay){
         player.update(delay, rbs);
+
         for (Enemy enemy : enemies) {
             enemy.update(delay, rbs);
             Projectile proj = enemy.shoot(player.getPos());
@@ -95,10 +93,18 @@ public abstract class Level extends JPanel{
                 addProj(proj);
             }
         }
-        
+
+        ArrayList<Rigidbody> projRbs = new ArrayList<>();
+        projRbs.add(player);
+        projRbs.addAll(rbs);
         for (Projectile proj : projs){
-            proj.update(delay, rbs); 
+            proj.update(delay, projRbs);
         }
+
+        for (Rigidbody rb : rbs){
+            rb.update(delay, rbs);
+        }
+
     }
     
 

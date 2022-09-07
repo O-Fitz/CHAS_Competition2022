@@ -31,9 +31,11 @@ public class Projectile extends Entity{
                 MathVector offset = new MathVector(0.0, 0.0).add(this.getCollisionAreaSize()).mult(0.5);
                 Ray r = new Ray(this.getPos().add(offset), this.getVel());
                 Side side = RayVsRect(rb, r);
+
                 if (side != Side.NONE){
                     this.collided = true;
                     this.setVel(new MathVector(0.0,0.0));
+                    rb.onProjectileCollision(this);
                 }
             }
         }

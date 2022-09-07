@@ -100,6 +100,18 @@ public class MathVector extends Vector<Double> {
         return result;
     }
 
+    public MathVector normalise(){
+        return this.div(this.abs());
+    }
+
+    public double abs(){
+        double total = 0;
+        for (int i=0; i<this.elementCount; i++){
+            total += elementAt(i)*elementAt(i);
+        }
+        return Math.sqrt(total);
+    }
+
     // Setters and Getters
 
     public void setX(Double newx){this.setElementAt(newx, 0);}

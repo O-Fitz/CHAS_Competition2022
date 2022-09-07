@@ -103,5 +103,38 @@ public class Player extends Entity{
         }
     }
 
+    @Override
+    public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
+
+        g2d.setStroke(new BasicStroke(1));
+        g2d.setColor(color[0]);
+
+        MathVector origin = getPos().sub(offset);
+
+        int x = (int)Math.round(origin.getX()*scale.getX());
+        int y = (int)Math.round(origin.getY()*scale.getY());
+        int w = (int)Math.round(getSize().width*scale.getX());
+        int h = (int)Math.round(getSize().height*scale.getY());
+        Rectangle img = new Rectangle(x, y, w, h);
+
+        g2d.draw(img);
+
+
+        g2d.setColor(Color.CYAN);
+
+        MathVector off = new MathVector(0.0, 0.0).add(this.getCollisionAreaSize()).mult(0.5);
+
+        origin = getCollisionAreaPos().sub(offset).add(off);
+
+        x = (int)Math.round((origin.getX())*scale.getX());
+        y = (int)Math.round((origin.getY())*scale.getY());
+        w = (int)1;
+        h = (int)1;
+        img = new Rectangle(x, y, w, h);
+
+        g2d.draw(img);
+
+    }
+
 
 }
