@@ -18,17 +18,17 @@ public class DynamicRigidbody extends Rigidbody{
         vel = new MathVector(0.0, 0.0);
     }
 
-    public DynamicRigidbody(Dimension size){
+    public DynamicRigidbody(MathVector size){
         super(size);
         vel = new MathVector(0.0, 0.0);
     }
 
-    public DynamicRigidbody(Dimension size, MathVector position) {
+    public DynamicRigidbody(MathVector size, MathVector position) {
         super(size, position);
         this.vel = new MathVector(0.0, 0.0);
     }
 
-    public DynamicRigidbody(Dimension size, MathVector position, MathVector vel) {
+    public DynamicRigidbody(MathVector size, MathVector position, MathVector vel) {
         super(size, position);
         this.vel = vel;
     }
@@ -56,11 +56,11 @@ public class DynamicRigidbody extends Rigidbody{
                 Side side = RayVsRect(rb, r);
                 switch (side){
                     case TOP -> {
-                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY() + rb.getSize().height));
+                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY() + rb.getSize().getX()));
                         this.setVel(new MathVector(this.vel.getX(), Math.max(0, this.vel.getY())));
                     }
                     case BOTTOM -> {
-                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY()-this.getSize().getHeight()));
+                        this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY()-this.getSize().getY()));
                         this.setVel(new MathVector(this.getVel().getX(), Math.min(0, this.vel.getY())));
                     }
                     case LEFT -> {
@@ -68,7 +68,7 @@ public class DynamicRigidbody extends Rigidbody{
                         this.setVel(new MathVector(0.0, this.vel.getY()));
                     }
                     case RIGHT  -> {
-                        this.setPos(new MathVector(rb.getPos().getX() + rb.getSize().width, this.getPos().getY()));
+                        this.setPos(new MathVector(rb.getPos().getX() + rb.getSize().getX(), this.getPos().getY()));
                         this.setVel(new MathVector(0.0, this.vel.getY()));
                     }
                 }
@@ -80,31 +80,31 @@ public class DynamicRigidbody extends Rigidbody{
         return (point.getX() >= rb.getCollisionAreaPos().getX()
                 & point.getY() >= rb.getCollisionAreaPos().getY())
                 
-                &(point.getX() <= rb.getCollisionAreaPos().getX()+rb.getCollisionAreaSize().width
-                &point.getY() <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().height);
+                &(point.getX() <= rb.getCollisionAreaPos().getX()+rb.getCollisionAreaSize().getX()
+                &point.getY() <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().getY());
     }
     
     protected static boolean pointInRect(Rigidbody rb, Dimension point){
         return (point.width >= rb.getCollisionAreaPos().getX()
                 & point.height >= rb.getCollisionAreaPos().getY())
 
-                &(point.width <= rb.getCollisionAreaPos().getX()+rb.getCollisionAreaSize().width
-                &point.height <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().height);
+                &(point.width <= rb.getCollisionAreaPos().getX()+rb.getCollisionAreaSize().getX()
+                &point.height <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().getY());
     }
 
     protected static boolean rectInRect(Rigidbody rb1, Rigidbody rb2){
-        return (rb1.getCollisionAreaPos().getX() < rb2.getCollisionAreaPos().getX() + rb2.getCollisionAreaSize().width
-                & rb1.getCollisionAreaPos().getX() + rb1.getCollisionAreaSize().width > rb2.getCollisionAreaPos().getX())
+        return (rb1.getCollisionAreaPos().getX() < rb2.getCollisionAreaPos().getX() + rb2.getCollisionAreaSize().getX()
+                & rb1.getCollisionAreaPos().getX() + rb1.getCollisionAreaSize().getX() > rb2.getCollisionAreaPos().getX())
                 
-                & (rb1.getCollisionAreaPos().getY() < rb2.getCollisionAreaPos().getY() + rb2.getCollisionAreaSize().height
-                & rb1.getCollisionAreaPos().getY() + rb1.getCollisionAreaSize().height > rb2.getCollisionAreaPos().getY());
+                & (rb1.getCollisionAreaPos().getY() < rb2.getCollisionAreaPos().getY() + rb2.getCollisionAreaSize().getY()
+                & rb1.getCollisionAreaPos().getY() + rb1.getCollisionAreaSize().getY() > rb2.getCollisionAreaPos().getY());
     }
 
     protected static boolean checkCollisionAABB(Rigidbody rb1, Rigidbody rb2){
-        return rb1.getPos().getX() < rb2.getPos().getX()+rb2.getSize().width
-                &rb1.getPos().getX() + rb1.getSize().width > rb2.getPos().getX()
-                &rb1.getPos().getY() < rb2.getPos().getY()+rb2.getSize().height
-                &rb1.getPos().getY() + rb1.getSize().height > rb2.getPos().getY();
+        return rb1.getPos().getX() < rb2.getPos().getX()+rb2.getSize().getX()
+                &rb1.getPos().getX() + rb1.getSize().getX() > rb2.getPos().getX()
+                &rb1.getPos().getY() < rb2.getPos().getY()+rb2.getSize().getY()
+                &rb1.getPos().getY() + rb1.getSize().getY() > rb2.getPos().getY();
     }
 
     protected static Side RayVsRect(Rigidbody rb, Ray ray){
@@ -112,7 +112,7 @@ public class DynamicRigidbody extends Rigidbody{
         if (Objects.equals(ray.direction, new MathVector(0.0, 0.0))){
             return Side.NONE;
         }
-
+        
         MathVector tNear = rb.getCollisionAreaPos().sub(ray.origin);
         tNear.setX(tNear.getX()/ray.direction.getX());
         tNear.setY(tNear.getY()/ray.direction.getY());
@@ -157,7 +157,6 @@ public class DynamicRigidbody extends Rigidbody{
     }
 
     @Override
-
     public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
 
 
@@ -168,8 +167,8 @@ public class DynamicRigidbody extends Rigidbody{
 
         int x = (int)Math.round(origin.getX()*scale.getX());
         int y = (int)Math.round(origin.getY()*scale.getY());
-        int w = (int)Math.round(getSize().width*scale.getX());
-        int h = (int)Math.round(getSize().height*scale.getY());
+        int w = (int)Math.round(getSize().getX()*scale.getX());
+        int h = (int)Math.round(getSize().getY()*scale.getY());
         Rectangle img = new Rectangle(x, y, w, h);
 
         g2d.draw(img);

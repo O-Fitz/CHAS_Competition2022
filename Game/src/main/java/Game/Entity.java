@@ -23,19 +23,19 @@ public class Entity extends DynamicRigidbody{
         this.health = maxHealth;
     }
 
-    public Entity(Dimension size, int maxHealth) {
+    public Entity(MathVector size, int maxHealth) {
         super(size);
         this.maxHealth = maxHealth;
         this.health = maxHealth;
     }
 
-    public Entity(Dimension size, MathVector position, int maxHealth) {
+    public Entity(MathVector size, MathVector position, int maxHealth) {
         super(size, position);
         this.maxHealth = maxHealth;
         this.health = maxHealth;
     }
 
-    public Entity(Dimension size, MathVector position, MathVector velocity, int maxHealth) {
+    public Entity(MathVector size, MathVector position, MathVector velocity, int maxHealth) {
         super(size, position, velocity);
         this.maxHealth = maxHealth;
         this.health = maxHealth;

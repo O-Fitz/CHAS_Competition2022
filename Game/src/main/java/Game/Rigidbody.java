@@ -9,35 +9,35 @@ import java.util.Vector;
 
 public class Rigidbody{
 
-    private Dimension size;
+    private MathVector size;
     private MathVector pos;
 
 
     private MathVector collisionAreaRelPos;
-    private Dimension collisionAreaSize;
+    private MathVector collisionAreaSize;
 
     private boolean collide = true;
 
     // Constructors
     public Rigidbody(){
-        size = new Dimension(1, 1);
+        size = new MathVector(1.0, 1.0);
         pos = new MathVector(0.0, 0.0);
         collisionAreaRelPos = new MathVector(0.0, 0.0);
         collisionAreaSize = size;
     }
 
-    public Rigidbody(Dimension size){
+    public Rigidbody(MathVector size){
         this.size = size;
         pos = new MathVector(0.0, 0.0);
         collisionAreaRelPos = new MathVector(0.0, 0.0);
         collisionAreaSize = size;
     }
 
-    public Rigidbody(Dimension size, MathVector position){
+    public Rigidbody(MathVector size, MathVector position){
         this.size = size;
         pos = position;
         collisionAreaRelPos = new MathVector(-0.5, -0.5);
-        collisionAreaSize = new Dimension(size.width+1, size.height+1);
+        collisionAreaSize = new MathVector(size.getX()+1, size.getY()+1);
     }
 
 
@@ -48,10 +48,10 @@ public class Rigidbody{
     public void setPos(MathVector pos) {
         this.pos = pos;
     }
-    public Dimension getSize() {
+    public MathVector getSize() {
         return size;
     }
-    public void setSize(Dimension size) {
+    public void setSize(MathVector size) {
         this.size = size;
     }
     public MathVector getCollisionAreaPos() {
@@ -60,10 +60,10 @@ public class Rigidbody{
     public void setCollisionAreaPos(MathVector collisionAreaPos) {
         this.collisionAreaRelPos = collisionAreaPos.sub(getPos());
     }
-    public Dimension getCollisionAreaSize() {
+    public MathVector getCollisionAreaSize() {
         return collisionAreaSize;
     }
-    public void setCollisionAreaSize(Dimension collisionAreaSize) {
+    public void setCollisionAreaSize(MathVector collisionAreaSize) {
         this.collisionAreaSize = collisionAreaSize;
     }
     public boolean isCollide() {
@@ -93,8 +93,8 @@ public class Rigidbody{
 
         int x = (int)Math.round(origin.getX()*scale.getX());
         int y = (int)Math.round(origin.getY()*scale.getY());
-        int w = (int)Math.round(size.width*scale.getX());
-        int h = (int)Math.round(size.height*scale.getY());
+        int w = (int)Math.round(size.getX()*scale.getX());
+        int h = (int)Math.round(size.getY()*scale.getY());
         Rectangle img = new Rectangle(x, y, w, h);
         g2d.draw(img);
 
@@ -104,8 +104,8 @@ public class Rigidbody{
         origin = getCollisionAreaPos().sub(offset);
         x = (int)Math.round(origin.getX()*scale.getX());
         y = (int)Math.round(origin.getY()*scale.getY());
-        w = (int)Math.round(getCollisionAreaSize().width*scale.getX());
-        h = (int)Math.round(getCollisionAreaSize().height*scale.getY());
+        w = (int)Math.round(getCollisionAreaSize().getX()*scale.getX());
+        h = (int)Math.round(getCollisionAreaSize().getY()*scale.getY());
         img = new Rectangle(x, y, w, h);
         g2d.draw(img);
     }

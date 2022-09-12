@@ -11,18 +11,18 @@ public class Level1 extends Application.Level {
 
     @Override
     protected void initLevel(){
-        int w = 28;
-        int h = 5;
-        Rigidbody rb = new Rigidbody(new Dimension(w, h), new MathVector(0.0, 10.0));
-        rb.setCollisionAreaSize(new Dimension(w+1, h+1));
+        double w = 28;
+        double h = 5;
+        Rigidbody rb = new Rigidbody(new MathVector(w, h), new MathVector(0.0, 10.0));
+        rb.setCollisionAreaSize(new MathVector(w+1, h+1));
         rb.setCollisionAreaRelPos(new MathVector(-0.5, -0.5));
         addToRBS(rb);
         //rbs.add(new DynamicRigidbody(new Dimension(10, 10), new MathVector<Integer>(1, 2)));
 
-        Player player = new Player(new Dimension(1, 1), new MathVector(0.0, 0.0), 20);
+        Player player = new Player(new MathVector(1.0, 1.0), new MathVector(0.0, 0.0), 20);
         setPlayer(player);
 
-        Enemy enemy1 = new Enemy(new Dimension(1, 1), new MathVector(10.0, 0.0), 20);
+        Enemy enemy1 = new Enemy(new MathVector(1.0, 1.0), new MathVector(10.0, 0.0), 20);
         addEnemy(enemy1);
     }
 }
