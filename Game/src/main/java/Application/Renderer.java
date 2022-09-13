@@ -11,65 +11,99 @@ import java.awt.*;
 
 public class Renderer extends JPanel {
 
-    MainMenu home;
-    OptionsMenu options;
-    PauseMenu pause;
-    LevelSelection levelSelection;
+	MainMenu home;
+	OptionsMenu options;
+	PauseMenu pause;
+	LevelSelection levelSelection;
 
-    Level level;
+	Level level;
 
-    Application.GameState gamestate;
+	Application.GameState gamestate;
 
-    double scaleBy = 40;
-    MathVector scale = new MathVector(0.0, 0.0);
+	private boolean switching = false;
+	private Application.GameState lastGameState;
+	private Level lastLevel;
 
-    Renderer(Level l, MainMenu h, OptionsMenu o, PauseMenu p, LevelSelection levelSelection, Application.GameState ga){
-        super(null);
+	private final int fadeTimerMax = 30;
+	private int fadeTimer = 0;
+	private int fadeScale = 1;
+	private boolean fade = false;
 
-        level = l;
-        home = h;
-        options = o;
-        pause = p;
-        gamestate = ga;
-        this.levelSelection = levelSelection;
+	double scaleBy = 40;
+	MathVector scale = new MathVector(0.0, 0.0);
 
-    }
+	Renderer(Level l, MainMenu h, OptionsMenu o, PauseMenu p, LevelSelection levelSelection, Application.GameState ga){
+		super(null);
 
-    private Graphics2D setupGraphics2D(Graphics g){
-        Graphics2D g2d = (Graphics2D) g;
-        RenderingHints rh = new RenderingHints(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
-        );
+		level = l;
+		home = h;
+		options = o;
+		pause = p;
+		gamestate = ga;
+		this.levelSelection = levelSelection;
 
-        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHints(rh);
-        return g2d;
-    }
+	}
 
-    // Called every frame to paint the screen
-    @Override
-    public void paintComponent(Graphics g){
+	private Graphics2D setupGraphics2D(Graphics g){
+		Graphics2D g2d = (Graphics2D) g;
+		RenderingHints rh = new RenderingHints(
+				RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON
+		);
 
-        super.paintComponent(g);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g2d.setRenderingHints(rh);
+		return g2d;
+	}
 
-        Graphics2D g2d = setupGraphics2D(g);
-        Dimension screensize = getSize();
-        scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
+	// Called every frame to paint the screen
+	@Override
+	public void paintComponent(Graphics g){
 
-        switch (gamestate){
-            case HOME -> {home.render(g2d, scale);}
-            case OPTIONS -> {options.render(g2d, scale);}
-            case PAUSE -> {pause.render(g2d, scale);}
-            case PLAY ->{level.renderLevel(g2d, screensize, scale, scaleBy);}
-            case LEVEL_SELECTION -> {levelSelection.render(g2d, scale);}
-        }
+		super.paintComponent(g);
 
-    }
+		Graphics2D g2d = setupGraphics2D(g);
+		Dimension screensize = getSize();
+		scale = new MathVector(screensize.height/scaleBy, screensize.height/scaleBy);
 
-    public void update(Level l, Application.GameState ga){
-        level = l;
-        gamestate = ga;
-    }
+		Application.GameState renderingGamestate = (!switching) ? (gamestate) : (lastGameState);
+		switch (renderingGamestate){
+			case HOME -> {home.render(g2d, scale);}
+			case OPTIONS -> {options.render(g2d, scale);}
+			case PAUSE -> {pause.render(g2d, scale);}
+			case PLAY ->{level.renderLevel(g2d, screensize, scale, scaleBy);}
+			case LEVEL_SELECTION -> {levelSelection.render(g2d, scale);}
+		}
+
+
+		if (fade){
+			g2d.setColor(new Color(0, 0, 0, (int)((double)fadeTimer*255/fadeTimerMax)));
+			Rectangle rect = new Rectangle(0, 0, screensize.width, screensize.height);
+			g2d.fill(rect);
+
+			fadeTimer += fadeScale;
+			if (fadeTimer >= fadeTimerMax){
+				fadeScale = -1;
+				switching = false;
+			}else if (fadeTimer == 0){
+				fade = false;
+				fadeScale = 1;
+			}
+		}
+
+	}
+
+	public void update(Level l, Application.GameState ga){
+		if (!l.equals(level) || !(gamestate.equals(ga))){
+			lastLevel = level;
+			lastGameState = gamestate;
+
+			level = l;
+			gamestate = ga;
+			fade = true;
+			switching = true;
+		}
+
+	}
 
 }
