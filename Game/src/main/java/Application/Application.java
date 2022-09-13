@@ -1,6 +1,7 @@
 package Application;
 
 import Application.Levels.Level1;
+import Application.Menus.LevelSelection;
 import Application.Menus.MainMenu;
 import Application.Menus.OptionsMenu;
 import Application.Menus.PauseMenu;
@@ -23,9 +24,12 @@ public class Application extends JFrame implements ActionListener {
     private Level level;
     private Level lastLevel;
 
+    //private HashMap<Integer, Level> levelIDs = new HashMap<Integer, Level>();
+
     private PauseMenu pause;
     private MainMenu home;
     private OptionsMenu options;
+    private LevelSelection levelSelection;
 
 
     private GameState gamestate;
@@ -45,18 +49,20 @@ public class Application extends JFrame implements ActionListener {
         timer = new Timer(DELAY, this);
         timer.start();
 
-        level = new Level1();
+        level = new Level1(1);
         home = new MainMenu();
         options = new OptionsMenu();
         pause = new PauseMenu();
-        gamestate = GameState.PLAY;
+        levelSelection = new LevelSelection();
+        gamestate = GameState.HOME; // TODO: SWITCH TO GameState.PLAY for debugging
+        //gamestate = GameState.PLAY;
 
         initUI();
     }
 
     private void initUI(){
 
-        renderer = new Renderer(level, home, options, pause, gamestate);
+        renderer = new Renderer(level, home, options, pause, levelSelection, gamestate);
 
         add(renderer);
 
@@ -80,12 +86,17 @@ public class Application extends JFrame implements ActionListener {
     // Mainloop (sort of)
     @Override
     public void actionPerformed(ActionEvent e) {
+        ChangeEvent event = new ChangeEvent();
         switch (gamestate){
             case HOME -> {}
             case OPTIONS -> {}
             case PAUSE -> {}
-            case PLAY ->{level.update(timer.getDelay());}
+            case PLAY ->{event = level.update(timer.getDelay());}
+            case LEVEL_SELECTION -> {}
         }
+
+        handleChangeEvent(event);
+
         renderer.update(level, gamestate);
         renderer.repaint();
 
@@ -94,7 +105,7 @@ public class Application extends JFrame implements ActionListener {
     void changeLevel(int l){
         lastLevel = level;
         if (l == 1){
-            level = new Level1();
+            level = new Level1(1);
         }
     }
 
@@ -116,6 +127,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {event = options.keyReleased(e);}
                 case PAUSE -> {event = pause.keyReleased(e);}
                 case PLAY ->{event = level.keyReleased(e);}
+                case LEVEL_SELECTION -> {levelSelection.keyReleased(e);}
             }
 
             handleChangeEvent(event);
@@ -129,6 +141,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {event = options.keyPressed(e);}
                 case PAUSE -> {event = pause.keyPressed(e);}
                 case PLAY ->{event = level.keyPressed(e);}
+                case LEVEL_SELECTION -> {event = levelSelection.keyPressed(e);}
             }
             handleChangeEvent(event);
         }
@@ -145,6 +158,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {}
                 case PAUSE -> {}
                 case PLAY ->{}
+                case LEVEL_SELECTION -> {}
 
             }
             handleChangeEvent(event);
@@ -159,6 +173,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {event = options.mousePressed(e);}
                 case PAUSE -> {event = pause.mousePressed(e);}
                 case PLAY ->{}
+                case LEVEL_SELECTION -> {event = levelSelection.mousePressed(e);}
             }
             handleChangeEvent(event);
         }
@@ -172,6 +187,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {event = options.mouseReleased(e);}
                 case PAUSE -> {event = pause.mouseReleased(e);}
                 case PLAY ->{}
+                case LEVEL_SELECTION -> {event = levelSelection.mouseReleased(e);}
             }
             handleChangeEvent(event);
         }
@@ -186,6 +202,7 @@ public class Application extends JFrame implements ActionListener {
                 case OPTIONS -> {event = options.mouseMoved(e);}
                 case PAUSE -> {event = pause.mouseMoved(e);}
                 case PLAY -> {event.type = ChangeEvent.eventType.NONE;}
+                case LEVEL_SELECTION -> {event = levelSelection.mouseMoved(e);}
             }
             handleChangeEvent(event);
         }
@@ -195,7 +212,8 @@ public class Application extends JFrame implements ActionListener {
         HOME,
         OPTIONS,
         PAUSE,
-        PLAY
+        PLAY,
+        LEVEL_SELECTION
     }
 
     static MathVector transfromMousePos(Point pos, MathVector scale){

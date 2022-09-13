@@ -19,13 +19,13 @@ public class Button {
     private Color hoverColor;
     private boolean hover;
 
-    private FuctionCall function;
+    private FunctionCall function;
 
     public Button(){
 
     }
 
-    public Button(Dimension position, Dimension size, String text, FuctionCall fun) {
+    public Button(Dimension position, Dimension size, String text, FunctionCall fun) {
         this.position = new Point((int)position.getWidth(), (int)position.getHeight());
         this.size = size;
         this.text = text;
@@ -40,7 +40,7 @@ public class Button {
         this.hoverTextColor = new Color(0, 0, 0);
     }
 
-    public Button(Point position, Dimension size, String text, FuctionCall fun) {
+    public Button(Point position, Dimension size, String text, FunctionCall fun) {
         this.position = position;
         this.size = size;
         this.text = text;

@@ -1,19 +1,42 @@
 package Application.Menus;
 
+import Application.Application;
 import Application.ChangeEvent;
+import Application.CustomGUI.Button;
+import Application.CustomGUI.FunctionCall;
+import Application.Menu;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
-import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
-
-public class MainMenu extends Application.Menu{
+public class MainMenu extends Menu{
 
     @Override
     protected void setupUI(){
+        // Level Selector
+        Point pos = new Point(10, 10);
+        Dimension size = new Dimension(10, 5);
+        FunctionCall fun = ()->{
+            ChangeEvent event = new ChangeEvent();
+            event.type = ChangeEvent.eventType.MENU_CHANGE;
+            event.menu = Application.GameState.LEVEL_SELECTION;
+            return event;
+        };
+        Button b = new Button(pos, size, "LEVELS", fun);
+        buttons.add(b);
+
+        // Options menu
+        pos = new Point(10, 17);
+        size = new Dimension(10, 5);
+        fun = ()->{
+            ChangeEvent event = new ChangeEvent();
+            event.type = ChangeEvent.eventType.MENU_CHANGE;
+            event.menu = Application.GameState.OPTIONS;
+            return event;
+        };
+        b = new Button(pos, size, "OPTIONS", fun);
+        buttons.add(b);
+
 
     }
 

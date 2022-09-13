@@ -18,21 +18,16 @@ public class OptionsMenu extends Application.Menu {
 
     // Event Handlers
     @Override
-    public ChangeEvent keyPressed(KeyEvent e) {
+    public ChangeEvent keyPressed(KeyEvent e){
         ChangeEvent event = new ChangeEvent();
         event.type = ChangeEvent.eventType.NONE;
 
-        event = super.keyPressed(e);
+        int key = e.getKeyCode();
 
-        if (event.type != ChangeEvent.eventType.NONE) {
-            int key = e.getKeyCode();
-
-            if (key == KeyEvent.VK_ESCAPE) {
-                event.type = ChangeEvent.eventType.BACK;
-            }
-
-
+        if (key == KeyEvent.VK_ESCAPE){
+            event.type=ChangeEvent.eventType.BACK;
         }
+
         return event;
     }
 
@@ -45,6 +40,8 @@ public class OptionsMenu extends Application.Menu {
         if (event.type != ChangeEvent.eventType.NONE){}
         return event;
     }
+
+
 
 
 }

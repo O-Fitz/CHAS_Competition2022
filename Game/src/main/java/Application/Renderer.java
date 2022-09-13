@@ -1,5 +1,6 @@
 package Application;
 
+import Application.Menus.LevelSelection;
 import Application.Menus.MainMenu;
 import Application.Menus.OptionsMenu;
 import Application.Menus.PauseMenu;
@@ -13,6 +14,7 @@ public class Renderer extends JPanel {
     MainMenu home;
     OptionsMenu options;
     PauseMenu pause;
+    LevelSelection levelSelection;
 
     Level level;
 
@@ -21,7 +23,7 @@ public class Renderer extends JPanel {
     double scaleBy = 40;
     MathVector scale = new MathVector(0.0, 0.0);
 
-    Renderer(Level l, MainMenu h, OptionsMenu o, PauseMenu p, Application.GameState ga){
+    Renderer(Level l, MainMenu h, OptionsMenu o, PauseMenu p, LevelSelection levelSelection, Application.GameState ga){
         super(null);
 
         level = l;
@@ -29,6 +31,7 @@ public class Renderer extends JPanel {
         options = o;
         pause = p;
         gamestate = ga;
+        this.levelSelection = levelSelection;
 
     }
 
@@ -59,6 +62,7 @@ public class Renderer extends JPanel {
             case OPTIONS -> {options.render(g2d, scale);}
             case PAUSE -> {pause.render(g2d, scale);}
             case PLAY ->{level.renderLevel(g2d, screensize, scale, scaleBy);}
+            case LEVEL_SELECTION -> {levelSelection.render(g2d, scale);}
         }
 
     }

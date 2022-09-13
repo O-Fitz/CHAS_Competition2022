@@ -6,7 +6,7 @@ public class ChangeEvent {
     public eventType type;
 
     public ChangeEvent(){
-
+        type = eventType.NONE;
     }
 
     public ChangeEvent(eventType type){

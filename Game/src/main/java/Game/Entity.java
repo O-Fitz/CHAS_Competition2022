@@ -9,6 +9,8 @@ public class Entity extends DynamicRigidbody{
     protected int maxHealth;
     protected int health;
 
+    private final int minHieght = 90;
+
 
     // Constructors
     public Entity(){
@@ -41,6 +43,11 @@ public class Entity extends DynamicRigidbody{
         this.health = maxHealth;
     }
 
+    public boolean isDead(){
+        if (health<0) return true;
+        if (getPos().getY()>minHieght) return true;
+        return false;
+    }
 
     // Setters and Getters
 

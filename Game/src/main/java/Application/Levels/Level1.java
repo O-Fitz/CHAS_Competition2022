@@ -1,5 +1,6 @@
 package Application.Levels;
 
+import Application.Level;
 import Game.Enemy;
 import Game.Player;
 import Game.Rigidbody;
@@ -25,4 +26,19 @@ public class Level1 extends Application.Level {
         Enemy enemy1 = new Enemy(new MathVector(1.0, 1.0), new MathVector(10.0, 0.0), 20);
         addEnemy(enemy1);
     }
+
+    public Level1(int levelID){
+        super(levelID);
+    }
+
+    public Level1(){
+        super();
+    }
+
+    @Override
+    public Level clone(int levelID){
+        Level1 newLevel = new Level1(levelID);
+        return newLevel;
+    }
+
 }

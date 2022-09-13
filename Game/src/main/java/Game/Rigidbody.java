@@ -98,7 +98,7 @@ public class Rigidbody{
         Rectangle img = new Rectangle(x, y, w, h);
         g2d.draw(img);
 
-        g2d.setStroke(new BasicStroke(1));
+        /*g2d.setStroke(new BasicStroke(1));
         g2d.setColor(Color.green);
 
         origin = getCollisionAreaPos().sub(offset);
@@ -107,7 +107,7 @@ public class Rigidbody{
         w = (int)Math.round(getCollisionAreaSize().getX()*scale.getX());
         h = (int)Math.round(getCollisionAreaSize().getY()*scale.getY());
         img = new Rectangle(x, y, w, h);
-        g2d.draw(img);
+        g2d.draw(img);*/
     }
 
     public void update(int delay, ArrayList<Rigidbody> rbs){

@@ -8,144 +8,133 @@ import java.util.ArrayList;
 
 public class Player extends Entity{
 
-    private int jumpCounter = 0;
-    private int jumpCooldown = 0;
+	private int jumpCounter = 0;
+	private int jumpCooldown = 0;
 
-    public Player() {
-        super();
-    }
+	private final double speed = 0.4;
 
-    public Player(int maxHealth) {
-        super(maxHealth);
-    }
+	public Player() {
+		super();
+	}
 
-    public Player(MathVector size, int maxHealth) {
-        super(size, maxHealth);
-    }
+	public Player(int maxHealth) {
+		super(maxHealth);
+	}
 
-    public Player(MathVector size, MathVector position, int maxHealth) {
-        super(size, position, maxHealth);
-    }
+	public Player(MathVector size, int maxHealth) {
+		super(size, maxHealth);
+	}
 
-    public Player(MathVector size, MathVector position, MathVector velocity, int maxHealth) {
-        super(size, position, velocity, maxHealth);
-    }
+	public Player(MathVector size, MathVector position, int maxHealth) {
+		super(size, position, maxHealth);
+	}
 
-
-
-    // handlePress and handleRelease
-    // Returns true if input has been handled
-    // Otherwise returns false
-    public boolean handlePress(KeyEvent e){
-        boolean handled = false;
-        int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
-            setVel(new MathVector(getVel().getX()-0.6, getVel().getY()));
-            handled = true;
-        }
-        if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
-            setVel(new MathVector(getVel().getX()+0.6, getVel().getY()));
-            handled = true;
-        }
-        if (key == KeyEvent.VK_SPACE){
-            jump();
-            handled = true;
-        }
-        return handled;
-    }
-
-    public boolean handleRelease(KeyEvent e){
-        boolean handled = false;
-        int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
-            setVel(new MathVector(getVel().getX()+0.6, getVel().getY()));
-            handled = true;
-        }
-        if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
-            setVel(new MathVector(getVel().getX()-0.6, getVel().getY()));
-            handled = true;
-        }
-        return handled;
-    }
-
-    // Checks if the Player is able to jump
-    private boolean canJump(){
-
-        if (jumpCooldown != 0){
-            return false; // Returns false if jumped to quickly after another jump
-        }
-
-        if (this.getVel().getY() == 0){ // Checks if
-            jumpCounter = 0;
-            return true;
-        }else if (jumpCounter <= 1){
-            return true;
-        }
-        return false;
-    }
-
-    private void jump(){
-        if (canJump()) {
-            setVel(getVel().add(new MathVector(0.0, -1.5)));
-            jumpCounter++;
-            jumpCooldown = 2;
-        }
-    }
-
-    @Override
-    public void update(int delay, ArrayList<Rigidbody> rbs){
-        super.update(delay, rbs);
-
-        if (jumpCooldown > 0){
-            jumpCooldown--;
-        }
-    }
-
-    @Override
-    public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
-
-        g2d.setStroke(new BasicStroke(1));
-        g2d.setColor(color[0]);
-
-        MathVector origin = getPos().sub(offset);
-
-        int x = (int)Math.round(origin.getX()*scale.getX());
-        int y = (int)Math.round(origin.getY()*scale.getY());
-        int w = (int)Math.round(getSize().getX()*scale.getX());
-        int h = (int)Math.round(getSize().getY()*scale.getY());
-        Rectangle img = new Rectangle(x, y, w, h);
-
-        g2d.draw(img);
+	public Player(MathVector size, MathVector position, MathVector velocity, int maxHealth) {
+		super(size, position, velocity, maxHealth);
+	}
 
 
-        g2d.setColor(Color.CYAN);
-/*
-        //MathVector off = new MathVector(0.0, 0.0).add(this.getCollisionAreaSize()).mult(0.5);
-        MathVector off = this.getMidPos();
 
-        origin = getCollisionAreaPos().sub(offset).add(off);
+	// handlePress and handleRelease
+	// Returns true if input has been handled
+	// Otherwise returns false
+	public boolean handlePress(KeyEvent e){
+		boolean handled = false;
+		int key = e.getKeyCode();
 
-        x = (int)Math.round((origin.getX())*scale.getX());
-        y = (int)Math.round((origin.getY())*scale.getY());
-        w = (int)1;
-        h = (int)1;
-        img = new Rectangle(x, y, w, h);
+		if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
+			setVel(new MathVector(getVel().getX()-speed, getVel().getY()));
+			handled = true;
+		}
+		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
+			setVel(new MathVector(getVel().getX()+speed, getVel().getY()));
+			handled = true;
+		}
+		if (key == KeyEvent.VK_SPACE){
+			jump();
+			handled = true;
+		}
+		return handled;
+	}
 
-        g2d.draw(img);*/
+	public boolean handleRelease(KeyEvent e){
+		boolean handled = false;
+		int key = e.getKeyCode();
 
-        origin = getCollisionAreaPos().sub(offset);
+		if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
+			setVel(new MathVector(getVel().getX()+speed, getVel().getY()));
+			handled = true;
+		}
+		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
+			setVel(new MathVector(getVel().getX()-speed, getVel().getY()));
+			handled = true;
+		}
+		return handled;
+	}
 
-        x = (int)Math.round((origin.getX())*scale.getX());
-        y = (int)Math.round((origin.getY())*scale.getY());
-        w = (int)Math.round((getCollisionAreaSize().getX())*scale.getX());
-        h = (int)Math.round((getCollisionAreaSize().getY())*scale.getY());
-        img = new Rectangle(x, y, w, h);
+	// Checks if the Player is able to jump
+	private boolean canJump(){
 
-        g2d.draw(img);
+		if (jumpCooldown != 0){
+			return false; // Returns false if jumped to quickly after another jump
+		}
 
-    }
+		if (this.getVel().getY() == 0){ // Checks if
+			jumpCounter = 0;
+			return true;
+		}else if (jumpCounter <= 1){
+			return true;
+		}
+		return false;
+	}
+
+	private void jump() {
+		if (canJump()) {
+			setVel(getVel().add(new MathVector(0.0, -1.5)));
+			jumpCounter++;
+			jumpCooldown = 2;
+		}
+	}
+
+	@Override
+	public void update(int delay, ArrayList<Rigidbody> rbs){
+		super.update(delay, rbs);
+
+		if (jumpCooldown > 0){
+			jumpCooldown--;
+		}
+	}
+
+	@Override
+	public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
+
+		g2d.setStroke(new BasicStroke(1));
+		g2d.setColor(color[0]);
+
+		MathVector origin = getPos().sub(offset);
+
+		int x = (int)Math.round(origin.getX()*scale.getX());
+		int y = (int)Math.round(origin.getY()*scale.getY());
+		int w = (int)Math.round(getSize().getX()*scale.getX());
+		int h = (int)Math.round(getSize().getY()*scale.getY());
+		Rectangle img = new Rectangle(x, y, w, h);
+
+		g2d.draw(img);
+
+
+		//g2d.setColor(Color.CYAN);
+
+		/*origin = getCollisionAreaPos().sub(offset);
+
+		x = (int)Math.round((origin.getX())*scale.getX());
+		y = (int)Math.round((origin.getY())*scale.getY());
+		w = (int)Math.round((getCollisionAreaSize().getX())*scale.getX());
+		h = (int)Math.round((getCollisionAreaSize().getY())*scale.getY());
+		img = new Rectangle(x, y, w, h);
+
+		g2d.draw(img);*/
+
+	}
 
 
 }
