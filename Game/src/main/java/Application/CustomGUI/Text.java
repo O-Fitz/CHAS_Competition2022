@@ -14,12 +14,22 @@ public class Text {
 
 	private Color textColor;
 
+	private boolean isStatic = false;
+
 	public Text(Point position, Dimension size, String text, Dimension textBuffer, Color textColor) {
 		this.position = position;
 		this.size = size;
 		this.text = text;
 		this.textBuffer = textBuffer;
 		this.textColor = textColor;
+	}
+
+	public Text(Point position, Dimension size, String text) {
+		this.position = position;
+		this.size = size;
+		this.text = text;
+		this.textBuffer = new Dimension(0, 0);
+		this.textColor = Color.BLACK;
 	}
 
 	public void render(Graphics2D g2d, MathVector scale){
@@ -34,6 +44,37 @@ public class Text {
 		pos.x += textBuffer.width*scale.getY();
 		pos.y += font.getSize() + textBuffer.height*scale.getY();
 		g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+	}
+
+	public void render(Graphics2D g2d, MathVector scale, MathVector offset){
+
+		if (isStatic){
+			Point pos = new Point(getPosition());
+			pos.x *= scale.getY();
+			pos.y *= scale.getY();
+
+			g2d.setColor(textColor);
+			Font font = new Font("Dialog.plain", Font.PLAIN, size.height);
+			g2d.setFont(font);
+			pos.x += textBuffer.width*scale.getY();
+			pos.y += font.getSize() + textBuffer.height*scale.getY();
+			g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+		} else{
+			Point pos = new Point(getPosition());
+
+			pos.x -= (int)Math.round(offset.getX());
+			pos.y -= (int)Math.round(offset.getY());
+
+			pos.x *= scale.getY();
+			pos.y *= scale.getY();
+
+			g2d.setColor(textColor);
+			Font font = new Font("Dialog.plain", Font.PLAIN, size.height);
+			g2d.setFont(font);
+			pos.x += textBuffer.width*scale.getY();
+			pos.y += font.getSize() + textBuffer.height*scale.getY();
+			g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+		}
 	}
 
 
@@ -77,5 +118,13 @@ public class Text {
 
 	public void setTextColor(Color textColor) {
 		this.textColor = textColor;
+	}
+
+	public boolean isStatic() {
+		return isStatic;
+	}
+
+	public void setStatic(boolean aStatic) {
+		isStatic = aStatic;
 	}
 }

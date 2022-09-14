@@ -101,7 +101,17 @@ public abstract class Level{
 		player.render(g2d, offset, scale, Color.BLUE);
 
 		for (var text : texts){
-			text.render(g2d, scale);
+			text.render(g2d, scale, offset);
+		}
+
+		// Healthbar
+		g2d.setColor(Color.RED);
+		int width = 5;
+		g2d.drawRect(2*(int)(double)scale.getX(), 2*(int)(double)scale.getY(), 4*width*(int)(double)scale.getX(), 2*(int)(double)scale.getX());
+		for (int i=0; i<player.getHealth(); i++){
+			Rectangle rect = new Rectangle((2+width*i)*(int)(double)scale.getX(), 2*(int)(double)scale.getY(),
+					width*(int)(double)scale.getX(), 2*(int)(double)scale.getX());
+			g2d.fill(rect);
 		}
 
 	}

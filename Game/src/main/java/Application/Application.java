@@ -9,6 +9,7 @@ import Physics.MathVector;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -30,6 +31,9 @@ public class Application extends JFrame implements ActionListener {
 	private MainMenu home;
 	private OptionsMenu options;
 	private LevelSelection levelSelection;
+
+	private int maxTransitionTime = 50;
+	private int transitionTime = maxTransitionTime;
 
 
 	private GameState gamestate;
@@ -73,19 +77,15 @@ public class Application extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
-
-	// Starts the program
-	public static void main(String[] args){
-		EventQueue.invokeLater(() -> {
-			Application ex = new Application();
-			ex.setVisible(true);
-		});
-	}
-
 	// Is performed every DELAY ms
 	// Mainloop (sort of)
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
+		if (transitionTime > 0){
+			transitionTime --;
+		}
+
 		ChangeEvent event = new ChangeEvent();
 		switch (gamestate){
 			case HOME -> {}
@@ -109,8 +109,12 @@ public class Application extends JFrame implements ActionListener {
 		}
 	}
 
+	void changeMenu(GameState menu){
+		gamestate = menu;
+		transitionTime = maxTransitionTime;
+	}
+
 	void completedLevel(int levelID, int health, int maxHealth){
-		System.out.println(levelID);
 		int score;
 		if (health == maxHealth){
 			score = 3;
@@ -119,16 +123,22 @@ public class Application extends JFrame implements ActionListener {
 		} else{
 			score = 1;
 		}
-		System.out.println(score);
+		writeScore(levelID, score);
 	}
 
+	private void writeScore(int levelID, int score){
+		File file = new File("Saves/save1.json");
+		System.out.println(file.exists());
+
+		// TODO: Write score to JSON
+	}
 
 	private void handleChangeEvent(ChangeEvent event){
 		switch (event.type){
-			case MENU_CHANGE -> {lastGamestates.add(gamestate); gamestate = event.menu;}
-			case LEVEL_CHANGE -> {changeLevel(event.level); gamestate = GameState.PLAY;}
-			case BACK -> {gamestate = lastGamestates.get(lastGamestates.size()-1); lastGamestates.remove(lastGamestates.size()-1);}
-			case LEVEL_COMPLETE -> {completedLevel(event.level, event.health, event.maxHealth); gamestate = GameState.LEVEL_SELECTION;}
+			case MENU_CHANGE -> {lastGamestates.add(gamestate); changeMenu(event.menu);}
+			case LEVEL_CHANGE -> {changeLevel(event.level); changeMenu(GameState.PLAY);}
+			case BACK -> {changeMenu(lastGamestates.get(lastGamestates.size()-1)); lastGamestates.remove(lastGamestates.size()-1);}
+			case LEVEL_COMPLETE -> {completedLevel(event.level, event.health, event.maxHealth); changeMenu(GameState.LEVEL_SELECTION);}
 		}
 	}
 
@@ -136,29 +146,53 @@ public class Application extends JFrame implements ActionListener {
 	private class TAdapter extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent e) {
-			ChangeEvent event = new ChangeEvent();
-			switch (gamestate){
-				case HOME -> {event = home.keyReleased(e);}
-				case OPTIONS -> {event = options.keyReleased(e);}
-				case PAUSE -> {event = pause.keyReleased(e);}
-				case PLAY ->{event = level.keyReleased(e);}
-				case LEVEL_SELECTION -> {levelSelection.keyReleased(e);}
-			}
+			if (transitionTime <= 0) {
+				ChangeEvent event = new ChangeEvent();
+				switch (gamestate) {
+					case HOME -> {
+						event = home.keyReleased(e);
+					}
+					case OPTIONS -> {
+						event = options.keyReleased(e);
+					}
+					case PAUSE -> {
+						event = pause.keyReleased(e);
+					}
+					case PLAY -> {
+						event = level.keyReleased(e);
+					}
+					case LEVEL_SELECTION -> {
+						levelSelection.keyReleased(e);
+					}
+				}
 
-			handleChangeEvent(event);
+				handleChangeEvent(event);
+			}
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			ChangeEvent event = new ChangeEvent();
-			switch (gamestate){
-				case HOME -> {event = home.keyPressed(e);}
-				case OPTIONS -> {event = options.keyPressed(e);}
-				case PAUSE -> {event = pause.keyPressed(e);}
-				case PLAY ->{event = level.keyPressed(e);}
-				case LEVEL_SELECTION -> {event = levelSelection.keyPressed(e);}
+			if (transitionTime <= 0) {
+				ChangeEvent event = new ChangeEvent();
+				switch (gamestate) {
+					case HOME -> {
+						event = home.keyPressed(e);
+					}
+					case OPTIONS -> {
+						event = options.keyPressed(e);
+					}
+					case PAUSE -> {
+						event = pause.keyPressed(e);
+					}
+					case PLAY -> {
+						event = level.keyPressed(e);
+					}
+					case LEVEL_SELECTION -> {
+						event = levelSelection.keyPressed(e);
+					}
+				}
+				handleChangeEvent(event);
 			}
-			handleChangeEvent(event);
 		}
 
 	}
@@ -166,45 +200,74 @@ public class Application extends JFrame implements ActionListener {
 	private class MAdapter extends MouseAdapter{
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			ChangeEvent event = new ChangeEvent();
-			event.type = ChangeEvent.eventType.NONE;
-			switch (gamestate){
-				case HOME -> {}
-				case OPTIONS -> {}
-				case PAUSE -> {}
-				case PLAY ->{}
-				case LEVEL_SELECTION -> {}
+			if (transitionTime <= 0) {
+				ChangeEvent event = new ChangeEvent();
+				event.type = ChangeEvent.eventType.NONE;
+				switch (gamestate) {
+					case HOME -> {
+					}
+					case OPTIONS -> {
+					}
+					case PAUSE -> {
+					}
+					case PLAY -> {
+					}
+					case LEVEL_SELECTION -> {
+					}
 
+				}
+				handleChangeEvent(event);
 			}
-			handleChangeEvent(event);
 		}
 
 		@Override
-		public void mousePressed(MouseEvent e){
-			ChangeEvent event = new ChangeEvent();
-			event.type = ChangeEvent.eventType.NONE;
-			switch (gamestate){
-				case HOME -> {event = home.mousePressed(e);}
-				case OPTIONS -> {event = options.mousePressed(e);}
-				case PAUSE -> {event = pause.mousePressed(e);}
-				case PLAY ->{}
-				case LEVEL_SELECTION -> {event = levelSelection.mousePressed(e);}
+		public void mousePressed(MouseEvent e) {
+			if (transitionTime <= 0) {
+				ChangeEvent event = new ChangeEvent();
+				event.type = ChangeEvent.eventType.NONE;
+				switch (gamestate) {
+					case HOME -> {
+						event = home.mousePressed(e);
+					}
+					case OPTIONS -> {
+						event = options.mousePressed(e);
+					}
+					case PAUSE -> {
+						event = pause.mousePressed(e);
+					}
+					case PLAY -> {
+					}
+					case LEVEL_SELECTION -> {
+						event = levelSelection.mousePressed(e);
+					}
+				}
+				handleChangeEvent(event);
 			}
-			handleChangeEvent(event);
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e){
-			ChangeEvent event = new ChangeEvent();
-			event.type = ChangeEvent.eventType.NONE;
-			switch (gamestate){
-				case HOME -> {event = home.mouseReleased(e);}
-				case OPTIONS -> {event = options.mouseReleased(e);}
-				case PAUSE -> {event = pause.mouseReleased(e);}
-				case PLAY ->{}
-				case LEVEL_SELECTION -> {event = levelSelection.mouseReleased(e);}
+		public void mouseReleased(MouseEvent e) {
+			if (transitionTime <= 0) {
+				ChangeEvent event = new ChangeEvent();
+				event.type = ChangeEvent.eventType.NONE;
+				switch (gamestate) {
+					case HOME -> {
+						event = home.mouseReleased(e);
+					}
+					case OPTIONS -> {
+						event = options.mouseReleased(e);
+					}
+					case PAUSE -> {
+						event = pause.mouseReleased(e);
+					}
+					case PLAY -> {
+					}
+					case LEVEL_SELECTION -> {
+						event = levelSelection.mouseReleased(e);
+					}
+				}
+				handleChangeEvent(event);
 			}
-			handleChangeEvent(event);
 		}
 	}
 
@@ -234,4 +297,15 @@ public class Application extends JFrame implements ActionListener {
 	static MathVector transfromMousePos(Point pos, MathVector scale){
 		return (new MathVector(pos.getX(), pos.getY()).add(new MathVector(-17.775*0.6, -17.775*1.5))).div(scale.getY());
 	}
+
+
+	// Starts the program
+	public static void main(String[] args){
+		EventQueue.invokeLater(() -> {
+			Application ex = new Application();
+			ex.setVisible(true);
+			ex.writeScore(1, 2);
+		});
+	}
+
 }

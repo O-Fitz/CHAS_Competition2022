@@ -83,14 +83,6 @@ public class DynamicRigidbody extends Rigidbody{
 		}
 	}
 
-	protected static boolean pointInRect(Rigidbody rb, MathVector point){
-		return (point.getX() >= rb.getCollisionAreaPos().getX()
-				& point.getY() >= rb.getCollisionAreaPos().getY())
-
-				&(point.getX() <= rb.getCollisionAreaPos().getX()+rb.getCollisionAreaSize().getX()
-				&point.getY() <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().getY());
-	}
-
 	protected static Side RayVsRect(Rigidbody rb, Ray ray){
 
 		if (Objects.equals(ray.direction, new MathVector(0.0, 0.0))){

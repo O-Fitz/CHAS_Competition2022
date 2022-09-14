@@ -25,6 +25,8 @@ public class LevelSelection extends Menu {
 		Application.CustomGUI.Button b = new Button(pos, size, "LEVEL 1", fun);
 		buttons.add(b);
 
+		// TODO: Draw scores
+
 	}
 
 	@Override
