@@ -36,6 +36,7 @@ public class Player extends Entity{
 	}
 
 
+	//TODO: Player attacking the enemy
 
 	// handlePress and handleRelease
 	// Returns true if input has been handled

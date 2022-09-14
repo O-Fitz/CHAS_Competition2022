@@ -1,6 +1,7 @@
 package Application;
 
 import Application.CustomGUI.Button;
+import Application.CustomGUI.Text;
 import Application.Menus.PauseMenu;
 import Physics.MathVector;
 
@@ -13,12 +14,14 @@ import java.util.ArrayList;
 public abstract class Menu {
 
 	protected ArrayList<Button> buttons;
+	protected ArrayList<Text> texts;
 	private Button buttonPressed;
 
 	private MathVector scale = new MathVector(1.0, 1.0);
 
 	public Menu(){
 		buttons = new ArrayList<Button>();
+		texts = new ArrayList<>();
 		setupUI();
 	}
 
@@ -31,6 +34,10 @@ public abstract class Menu {
 
 		for (var button : buttons){
 			button.render(g2d, scale);
+		}
+
+		for (var text : texts){
+			text.render(g2d, scale);
 		}
 	}
 

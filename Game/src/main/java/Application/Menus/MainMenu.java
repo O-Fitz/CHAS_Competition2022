@@ -4,6 +4,7 @@ import Application.Application;
 import Application.ChangeEvent;
 import Application.CustomGUI.Button;
 import Application.CustomGUI.FunctionCall;
+import Application.CustomGUI.Text;
 import Application.Menu;
 
 import java.awt.*;
@@ -36,7 +37,6 @@ public class MainMenu extends Menu{
         };
         b = new Button(pos, size, "OPTIONS", fun);
         buttons.add(b);
-
 
     }
 

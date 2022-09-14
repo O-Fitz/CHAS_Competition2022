@@ -1,5 +1,6 @@
 package Application;
 
+import Application.CustomGUI.Text;
 import Application.Levels.Level1;
 import Game.Enemy;
 import Game.Player;
@@ -22,6 +23,8 @@ public abstract class Level{
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Projectile> projs = new ArrayList<Projectile>();
 	private Player player;
+
+	protected ArrayList<Text> texts;
 
 	private int levelID;
 
@@ -93,6 +96,10 @@ public abstract class Level{
 			projs.get(i).render(g2d, offset, scale, Color.RED);
 		}
 		player.render(g2d, offset, scale, Color.BLUE);
+
+		for (var text : texts){
+			text.render(g2d, scale);
+		}
 
 	}
 

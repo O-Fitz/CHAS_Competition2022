@@ -93,8 +93,6 @@ public class Button {
         g2d.setColor(getVisibleTextColor());
         Font font = new Font("Dialog.plain", Font.PLAIN, size.height/4);
         g2d.setFont(font);
-        //Font font = g2d.getFont();
-        //System.out.println(font.getFontName());
         pos.x += textBuffer.width*scale.getY();
         pos.y += font.getSize() + textBuffer.height*scale.getY();
         g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
