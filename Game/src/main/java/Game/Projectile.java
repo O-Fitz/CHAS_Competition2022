@@ -12,7 +12,9 @@ public class Projectile extends DynamicRigidbody {
     public boolean collided = false;
     private int range;
     private MathVector enemyPos;
-    
+
+    private int damage = 1;
+
     public Projectile(MathVector size, MathVector position, MathVector velocity, int range, MathVector enemyPos) {
         super(size, position, velocity);
         this.range = range;
@@ -50,5 +52,15 @@ public class Projectile extends DynamicRigidbody {
                 }
             }
         }
+    }
+
+    // Setters and Getters
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 }

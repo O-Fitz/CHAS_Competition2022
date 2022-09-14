@@ -82,7 +82,7 @@ public class Rigidbody{
         return getPos().mult(2.0).add(getSize()).mult(0.5);
     }
 
-
+    // Render the rigidbody
     public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
 
 
@@ -110,13 +110,17 @@ public class Rigidbody{
         g2d.draw(img);*/
     }
 
+    // Called in level update
     public void update(int delay, ArrayList<Rigidbody> rbs){
 
     }
 
+    // For when projectiles and the player collide with the rigidbody (overwritten in subclasses)
     protected void onProjectileCollision(Projectile proj){
 
     }
+
+    protected DynamicRigidbody.CollisionEvent onPlayerCollision(){return DynamicRigidbody.CollisionEvent.NONE;}
 
     enum Side{
         TOP,

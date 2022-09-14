@@ -109,11 +109,26 @@ public class Application extends JFrame implements ActionListener {
 		}
 	}
 
+	void completedLevel(int levelID, int health, int maxHealth){
+		System.out.println(levelID);
+		int score;
+		if (health == maxHealth){
+			score = 3;
+		} else if (((double)health)/maxHealth >= 0.5){
+			score = 2;
+		} else{
+			score = 1;
+		}
+		System.out.println(score);
+	}
+
+
 	private void handleChangeEvent(ChangeEvent event){
 		switch (event.type){
 			case MENU_CHANGE -> {lastGamestates.add(gamestate); gamestate = event.menu;}
 			case LEVEL_CHANGE -> {changeLevel(event.level); gamestate = GameState.PLAY;}
 			case BACK -> {gamestate = lastGamestates.get(lastGamestates.size()-1); lastGamestates.remove(lastGamestates.size()-1);}
+			case LEVEL_COMPLETE -> {completedLevel(event.level, event.health, event.maxHealth); gamestate = GameState.LEVEL_SELECTION;}
 		}
 	}
 

@@ -128,11 +128,16 @@ public abstract class Level{
 			rb.update(delay, rbs);
 		}
 
-		if (player.isDead()){
+
+		if (player.isCompletedLevel()){
+			ev.type = ChangeEvent.eventType.LEVEL_COMPLETE;
+			ev.level = levelID;
+			ev.health = player.getHealth();
+			ev.maxHealth = player.getMaxHealth();
+		} else if (player.isDead()){
 			ev.type = ChangeEvent.eventType.LEVEL_CHANGE;
 			ev.level = levelID;
 		}
-
 
 		return ev;
 	}

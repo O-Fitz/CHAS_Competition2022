@@ -22,7 +22,6 @@ public class Renderer extends JPanel {
 
 	private boolean switching = false;
 	private Application.GameState lastGameState;
-	private Level lastLevel;
 
 	private final int fadeTimerMax = 30;
 	private int fadeTimer = 0;
@@ -95,7 +94,6 @@ public class Renderer extends JPanel {
 
 	public void update(Level l, Application.GameState ga){
 		if (!l.equals(level) || !(gamestate.equals(ga))){
-			lastLevel = level;
 			lastGameState = gamestate;
 
 			level = l;

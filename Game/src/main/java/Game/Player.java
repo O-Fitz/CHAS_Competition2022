@@ -13,6 +13,8 @@ public class Player extends Entity{
 
 	private final double speed = 0.4;
 
+	private boolean completedLevel = false;
+
 	public Player() {
 		super();
 	}
@@ -62,15 +64,26 @@ public class Player extends Entity{
 		int key = e.getKeyCode();
 
 		if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
-			setVel(new MathVector(getVel().getX()+speed, getVel().getY()));
+			setVel(new MathVector(0.0, getVel().getY()));
 			handled = true;
 		}
 		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
-			setVel(new MathVector(getVel().getX()-speed, getVel().getY()));
+			setVel(new MathVector(0.0, getVel().getY()));
 			handled = true;
 		}
 		return handled;
 	}
+
+	@Override
+	protected void onCollision(Rigidbody rb){
+		CollisionEvent ev = rb.onPlayerCollision();
+
+		switch (ev){
+			case FINISHED -> {completedLevel = true;}
+			case DEATH -> {health = 0;}
+		}
+	}
+
 
 	// Checks if the Player is able to jump
 	private boolean canJump(){
@@ -136,5 +149,11 @@ public class Player extends Entity{
 
 	}
 
+	public boolean isCompletedLevel() {
+		return completedLevel;
+	}
 
+	public void setCompletedLevel(boolean completedLevel) {
+		this.completedLevel = completedLevel;
+	}
 }

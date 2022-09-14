@@ -1,6 +1,7 @@
 package Application.Levels;
 
 import Application.Level;
+import Game.EndPole;
 import Game.Enemy;
 import Game.Player;
 import Game.Rigidbody;
@@ -20,11 +21,15 @@ public class Level1 extends Application.Level {
         addToRBS(rb);
         //rbs.add(new DynamicRigidbody(new Dimension(10, 10), new MathVector<Integer>(1, 2)));
 
-        Player player = new Player(new MathVector(1.0, 1.0), new MathVector(0.0, 0.0), 20);
+        Player player = new Player(new MathVector(1.0, 1.0), new MathVector(0.0, 0.0), 4);
         setPlayer(player);
 
-        Enemy enemy1 = new Enemy(new MathVector(1.0, 1.0), new MathVector(10.0, 0.0), 20);
+        Enemy enemy1 = new Enemy(new MathVector(1.0, 1.0), new MathVector(10.0, 0.0), 3);
         addEnemy(enemy1);
+
+        EndPole ep = new EndPole(new MathVector(1.0, 2.0), new MathVector(5.0, 8.0));
+        addToRBS(ep);
+
     }
 
     public Level1(int levelID){
