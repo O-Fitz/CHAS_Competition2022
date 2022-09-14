@@ -91,29 +91,6 @@ public class DynamicRigidbody extends Rigidbody{
 				&point.getY() <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().getY());
 	}
 
-	protected static boolean pointInRect(Rigidbody rb, Dimension point){
-		return (point.width >= rb.getCollisionAreaPos().getX()
-				& point.height >= rb.getCollisionAreaPos().getY())
-
-				&(point.width <= rb.getCollisionAreaPos().getX()+rb.getCollisionAreaSize().getX()
-				&point.height <= rb.getCollisionAreaPos().getY()+rb.getCollisionAreaSize().getY());
-	}
-
-	protected static boolean rectInRect(Rigidbody rb1, Rigidbody rb2){
-		return (rb1.getCollisionAreaPos().getX() < rb2.getCollisionAreaPos().getX() + rb2.getCollisionAreaSize().getX()
-				& rb1.getCollisionAreaPos().getX() + rb1.getCollisionAreaSize().getX() > rb2.getCollisionAreaPos().getX())
-
-				& (rb1.getCollisionAreaPos().getY() < rb2.getCollisionAreaPos().getY() + rb2.getCollisionAreaSize().getY()
-				& rb1.getCollisionAreaPos().getY() + rb1.getCollisionAreaSize().getY() > rb2.getCollisionAreaPos().getY());
-	}
-
-	protected static boolean checkCollisionAABB(Rigidbody rb1, Rigidbody rb2){
-		return rb1.getPos().getX() < rb2.getPos().getX()+rb2.getSize().getX()
-				&rb1.getPos().getX() + rb1.getSize().getX() > rb2.getPos().getX()
-				&rb1.getPos().getY() < rb2.getPos().getY()+rb2.getSize().getY()
-				&rb1.getPos().getY() + rb1.getSize().getY() > rb2.getPos().getY();
-	}
-
 	protected static Side RayVsRect(Rigidbody rb, Ray ray){
 
 		if (Objects.equals(ray.direction, new MathVector(0.0, 0.0))){
@@ -191,7 +168,7 @@ public class DynamicRigidbody extends Rigidbody{
 		if (updateBuffer > 0) {
 			updateBuffer -= 1;
 		}
-		//updateBuffer = 1;
+
 		if (vel.getY() < 3) {
 			vel = vel.add(new MathVector(0.0, 0.2));
 		}

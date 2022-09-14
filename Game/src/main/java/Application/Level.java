@@ -33,6 +33,7 @@ public abstract class Level{
 	public Level(){
 
 		this.levelID = 0;
+		this.texts = new ArrayList<>();
 
 		// Sets up level design
 		initLevel();
@@ -40,6 +41,7 @@ public abstract class Level{
 
 	public Level(int levelID){
 		this.levelID = levelID;
+		this.texts = new ArrayList<>();
 
 		initLevel();
 	}
@@ -51,6 +53,7 @@ public abstract class Level{
 		this.player = another.player;
 		this.levelID = another.levelID;
 		this.offset = another.offset;
+		this.texts = another.texts;
 	}
 
 
