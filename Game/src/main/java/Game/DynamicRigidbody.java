@@ -120,6 +120,7 @@ public class DynamicRigidbody extends Rigidbody{
 			return Side.NONE;
 		}
 
+		// Finds the near and far interesectons
 		MathVector tNear = rb.getCollisionAreaPos().sub(ray.origin);
 		tNear.setX(tNear.getX()/ray.direction.getX());
 		tNear.setY(tNear.getY()/ray.direction.getY());
@@ -143,6 +144,7 @@ public class DynamicRigidbody extends Rigidbody{
 		if (tNear.getX() > tFar.getX()) tNear.swap(tFar, 0);
 		if (tNear.getY() > tFar.getY()) tNear.swap(tFar, 1);
 
+		// Checks that it actually collides
 		if (tNear.getX() > tFar.getY() || tNear.getY() > tFar.getX()) return Side.NONE;
 
 		double tHitNear = Math.max(tNear.getX(), tNear.getY());
