@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -19,7 +20,7 @@ public class LevelSelection extends Menu {
 	private HashMap<Integer, Integer> scores;
 
 	@Override
-	protected void setupUI(){
+	protected void setupUI() {
 
 		scores = new HashMap<>();
 		readScore();
@@ -27,7 +28,7 @@ public class LevelSelection extends Menu {
 		// Level 1 selector
 		Point pos = new Point(10, 10);
 		Dimension size = new Dimension(10, 5);
-		FunctionCall fun = ()->{
+		FunctionCall fun = () -> {
 			ChangeEvent event = new ChangeEvent();
 			event.type = ChangeEvent.eventType.LEVEL_CHANGE;
 			event.level = 1;
@@ -37,8 +38,8 @@ public class LevelSelection extends Menu {
 		buttons.add(b);
 
 		// Level 2 selector
-		Point pos2 = new Point(20, 10);
-		FunctionCall fun2 = ()->{
+		Point pos2 = new Point(25, 10);
+		FunctionCall fun2 = () -> {
 			ChangeEvent event = new ChangeEvent();
 			event.type = ChangeEvent.eventType.LEVEL_CHANGE;
 			event.level = 2;
@@ -47,21 +48,18 @@ public class LevelSelection extends Menu {
 		Application.CustomGUI.Button b2 = new Button(pos2, size, "LEVEL 2", fun2);
 		buttons.add(b2);
 
-		for (var level : scores.entrySet()){
-			for (int i=0; i<level.getValue(); i++){
-				pos = new Point(i*10, 20*(level.getKey()%4));
-				Star star = new Star(pos, new Dimension(2, 2), Color.YELLOW);
-				stars.add(star);
-			}
-		}
-
-		// TODO: Draw scores
+		addStars();
 
 	}
 
 	public void updateScore(int levelID, int score){
-		scores.put(levelID, score);
+		if (scores.containsKey(levelID)){
+			scores.put(levelID, Math.max(score, scores.get(levelID)));
+		}else{
+			scores.put(levelID, score);
+		}
 		writeScore();
+		addStars();
 	}
 
 	private void writeScore(){
@@ -76,7 +74,7 @@ public class LevelSelection extends Menu {
 
 			String str = "";
 			for (var item : scores.entrySet()){
-				str = str.concat(String.format("%d %d", item.getKey(), item.getValue()));
+				str = str.concat(String.format("%d %d\n", item.getKey(), item.getValue()));
 			}
 
 			FileWriter myWriter = new FileWriter("Saves/save1.txt");
@@ -84,7 +82,7 @@ public class LevelSelection extends Menu {
 			myWriter.close();
 
 		} catch (IOException e) {
-			System.out.println("An error occurred.");
+			System.out.println("An error occurred while saving.");
 			e.printStackTrace();
 		}
 	}
@@ -113,7 +111,18 @@ public class LevelSelection extends Menu {
 		}
 
 		for (var item : scores.entrySet()){
-			System.out.printf("%d %d", item.getKey(), item.getValue());
+			System.out.printf("%d %d\n", item.getKey(), item.getValue());
+		}
+	}
+
+	private void addStars(){
+		stars = new ArrayList<>();
+		for (var level : scores.entrySet()){
+			for (int i=0; i<level.getValue(); i++){
+				Point pos = new Point((int)Math.round((i*4)+16.5*level.getKey()-6), 18+5*(level.getKey()/4));
+				Star star = new Star(pos, new Dimension(2, 2), new Color(246, 229, 52));
+				stars.add(star);
+			}
 		}
 	}
 
