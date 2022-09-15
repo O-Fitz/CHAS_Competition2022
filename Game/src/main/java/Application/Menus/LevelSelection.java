@@ -36,6 +36,17 @@ public class LevelSelection extends Menu {
 		Application.CustomGUI.Button b = new Button(pos, size, "LEVEL 1", fun);
 		buttons.add(b);
 
+		// Level 2 selector
+		Point pos2 = new Point(20, 10);
+		FunctionCall fun2 = ()->{
+			ChangeEvent event = new ChangeEvent();
+			event.type = ChangeEvent.eventType.LEVEL_CHANGE;
+			event.level = 2;
+			return event;
+		};
+		Application.CustomGUI.Button b2 = new Button(pos2, size, "LEVEL 2", fun2);
+		buttons.add(b2);
+
 		for (var level : scores.entrySet()){
 			for (int i=0; i<level.getValue(); i++){
 				pos = new Point(i*10, 20*(level.getKey()%4));
@@ -45,8 +56,6 @@ public class LevelSelection extends Menu {
 		}
 
 		// TODO: Draw scores
-
-
 
 	}
 
