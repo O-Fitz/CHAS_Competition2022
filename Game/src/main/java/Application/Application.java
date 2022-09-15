@@ -2,6 +2,7 @@ package Application;
 
 import Application.Levels.Level1;
 import Application.Levels.Level2;
+import Application.Levels.Level3;
 import Application.Menus.LevelSelection;
 import Application.Menus.MainMenu;
 import Application.Menus.OptionsMenu;
@@ -108,17 +109,18 @@ public class Application extends JFrame implements ActionListener {
 		lastLevel = level;
 		switch(l){
 			case 1:
-			level = new Level1(1);
-		
-			break; 
-			case 2:
-			level = new Level2(2);
-	
-			break;
+				level = new Level1(1);
+				break; 
 
+			case 2:
+				level = new Level2(2);
+				break;
 			
+			case 3:
+				level = new Level3(3);
+				break;
 		}
-		
+
 	}
 
 	void changeMenu(GameState menu){

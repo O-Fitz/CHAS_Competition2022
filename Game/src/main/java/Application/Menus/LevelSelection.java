@@ -48,6 +48,18 @@ public class LevelSelection extends Menu {
 		Application.CustomGUI.Button b2 = new Button(pos2, size, "LEVEL 2", fun2);
 		buttons.add(b2);
 
+
+		// Level 3 selector
+		Point pos3 = new Point(40, 10);
+		FunctionCall fun3 = () -> {
+			ChangeEvent event = new ChangeEvent();
+			event.type = ChangeEvent.eventType.LEVEL_CHANGE;
+			event.level = 3;
+			return event;
+		};
+		Application.CustomGUI.Button b3 = new Button(pos3, size, "LEVEL 3", fun3);
+		buttons.add(b3);
+
 		addStars();
 
 	}

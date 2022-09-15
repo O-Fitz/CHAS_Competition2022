@@ -48,11 +48,11 @@ public class Player extends Entity{
 		int key = e.getKeyCode();
 
 		if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
-			setVel(new MathVector(getVel().getX()-speed, getVel().getY()));
+			setVel(new MathVector(-speed, getVel().getY()));
 			handled = true;
 		}
 		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
-			setVel(new MathVector(getVel().getX()+speed, getVel().getY()));
+			setVel(new MathVector(speed, getVel().getY()));
 			handled = true;
 		}
 		if (key == KeyEvent.VK_SPACE){
