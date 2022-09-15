@@ -105,6 +105,7 @@ public class Player extends Entity{
 		switch (ev){
 			case FINISHED -> {completedLevel = true;}
 			case DEATH -> {health = 0;}
+			case DAMAGE -> {health -= 1;}
 		}
 	}
 
@@ -127,7 +128,7 @@ public class Player extends Entity{
 
 	private void jump() {
 		if (canJump()) {
-			setVel(getVel().add(new MathVector(0.0, -1.5)));
+			setVel(getVel().add(new MathVector(0.0, -0.9)));
 			jumpCounter++;
 			jumpCooldown = 2;
 		}
@@ -161,18 +162,6 @@ public class Player extends Entity{
 
 		g2d.draw(img);
 
-
-		//g2d.setColor(Color.CYAN);
-
-		/*origin = getCollisionAreaPos().sub(offset);
-
-		x = (int)Math.round((origin.getX())*scale.getX());
-		y = (int)Math.round((origin.getY())*scale.getY());
-		w = (int)Math.round((getCollisionAreaSize().getX())*scale.getX());
-		h = (int)Math.round((getCollisionAreaSize().getY())*scale.getY());
-		img = new Rectangle(x, y, w, h);
-
-		g2d.draw(img);*/
 
 	}
 

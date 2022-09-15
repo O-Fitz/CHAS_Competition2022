@@ -72,5 +72,4 @@ public class Entity extends DynamicRigidbody{
 		this.health = health;
 	}
 
-
 }

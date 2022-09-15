@@ -2,10 +2,7 @@ package Application.Levels;
 
 import Application.CustomGUI.Text;
 import Application.Level;
-import Game.EndPole;
-import Game.Enemy;
-import Game.Player;
-import Game.Rigidbody;
+import Game.*;
 import Physics.MathVector;
 
 import java.awt.*;
@@ -38,18 +35,35 @@ public class Level1 extends Application.Level {
 		EndPole ep = new EndPole(new MathVector(1.0, 2.0), new MathVector(50.0, 8.0));
 		addToRBS(ep);
 
+		// Spike
+		Spike spike = new Spike(new MathVector(1.0, 1.0), new MathVector(35.0, 9.0));
+		addToRBS(spike);
+
+
 		// Tutorial text
-		Point pos = new Point(3, 3);
+		MathVector pos = new MathVector(2.0, 3.0);
 		Dimension size = new Dimension(0, 15);
 
-		Text text = new Text(pos, size, "^^^ This is your health (max 4) ^^^");
+		Text text = new Text(pos, size, "Move with WA or the arrows");
+		texts.add(text);
+		text = new Text(new MathVector(pos.getX(), pos.getY()+1), size, "Jump with space");
+		texts.add(text);
+
+		pos = new MathVector(3.0, 4.0);
+		text = new Text(pos, size, "^^^ This is your health (max 4) ^^^");
 		text.setStatic(true);
 		texts.add(text);
 
-		pos = new Point(20, 20);
+		pos = new MathVector(11.0, 6.0);
 		text = new Text(pos, size, "This is an enemy, they like to shoot at you");
 		texts.add(text);
-		text = new Text(new Point(pos.x+5, pos.y+1), new Dimension(0, 15), "v");
+		text = new Text(new MathVector(pos.getX()+5, pos.getY()+1), new Dimension(0, 15), "v");
+		texts.add(text);
+
+		pos = new MathVector(32.0, 6.0);
+		text = new Text(pos, size, "This is a spike, they hurt");
+		texts.add(text);
+		text = new Text(new MathVector(pos.getX()+3, pos.getY()+1), new Dimension(0, 15), "v");
 		texts.add(text);
 
 	}
@@ -64,8 +78,7 @@ public class Level1 extends Application.Level {
 
 	@Override
 	public Level clone(int levelID){
-		Level1 newLevel = new Level1(levelID);
-		return newLevel;
+		return new Level1(levelID);
 	}
 
 }

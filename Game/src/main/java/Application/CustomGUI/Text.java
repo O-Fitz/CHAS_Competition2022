@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class Text {
 
-	private Point position;
+	private MathVector position;
 	private Dimension size;
 
 	private String text;
@@ -16,7 +16,7 @@ public class Text {
 
 	private boolean isStatic = false;
 
-	public Text(Point position, Dimension size, String text, Dimension textBuffer, Color textColor) {
+	public Text(MathVector position, Dimension size, String text, Dimension textBuffer, Color textColor) {
 		this.position = position;
 		this.size = size;
 		this.text = text;
@@ -24,7 +24,7 @@ public class Text {
 		this.textColor = textColor;
 	}
 
-	public Text(Point position, Dimension size, String text) {
+	public Text(MathVector position, Dimension size, String text) {
 		this.position = position;
 		this.size = size;
 		this.text = text;
@@ -34,7 +34,18 @@ public class Text {
 
 	public void render(Graphics2D g2d, MathVector scale){
 
-		Point pos = new Point(getPosition());
+		g2d.setColor(textColor);
+		Font font = new Font("Dialog.plain", Font.PLAIN, size.height);
+		g2d.setFont(font);
+		MathVector pos = getPosition();
+
+		int x = (int)Math.round((pos.getX()+textBuffer.width)*scale.getX());
+		int y = (int)Math.round((pos.getY()+textBuffer.height)*scale.getX()+font.getSize());
+
+		//pos.y += font.getSize() + textBuffer.height*scale.getY();
+		g2d.drawString(text, x, y);
+
+		/*Point pos = new Point(getPosition());
 		pos.x *= scale.getY();
 		pos.y *= scale.getY();
 
@@ -43,24 +54,27 @@ public class Text {
 		g2d.setFont(font);
 		pos.x += textBuffer.width*scale.getY();
 		pos.y += font.getSize() + textBuffer.height*scale.getY();
-		g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+		g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);*/
 	}
 
 	public void render(Graphics2D g2d, MathVector scale, MathVector offset){
 
-		if (isStatic){
-			Point pos = new Point(getPosition());
-			pos.x *= scale.getY();
-			pos.y *= scale.getY();
+		g2d.setColor(textColor);
+		Font font = new Font("Dialog.plain", Font.PLAIN, size.height);
+		g2d.setFont(font);
 
-			g2d.setColor(textColor);
-			Font font = new Font("Dialog.plain", Font.PLAIN, size.height);
-			g2d.setFont(font);
-			pos.x += textBuffer.width*scale.getY();
-			pos.y += font.getSize() + textBuffer.height*scale.getY();
-			g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+		MathVector pos;
+
+		if (isStatic){
+
+			pos = getPosition();
+
 		} else{
-			Point pos = new Point(getPosition());
+
+			pos = getPosition().sub(offset);
+
+
+			/*MathVector pos = getPosition();
 
 			pos.x -= (int)Math.round(offset.getX());
 			pos.y -= (int)Math.round(offset.getY());
@@ -73,18 +87,24 @@ public class Text {
 			g2d.setFont(font);
 			pos.x += textBuffer.width*scale.getY();
 			pos.y += font.getSize() + textBuffer.height*scale.getY();
-			g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);
+			g2d.drawString(text, pos.x, pos.y+font.getSize()+textBuffer.height);*/
 		}
+
+		int x = (int)Math.round((pos.getX()+textBuffer.width)*scale.getX());
+		int y = (int)Math.round((pos.getY()+textBuffer.height)*scale.getX()+font.getSize());
+
+		//pos.y += font.getSize() + textBuffer.height*scale.getY();
+		g2d.drawString(text, x, y);
 	}
 
 
 	// Getters and Setters
 
-	public Point getPosition() {
+	public MathVector getPosition() {
 		return position;
 	}
 
-	public void setPosition(Point position) {
+	public void setPosition(MathVector position) {
 		this.position = position;
 	}
 

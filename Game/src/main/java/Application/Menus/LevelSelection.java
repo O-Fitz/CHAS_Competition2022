@@ -106,13 +106,10 @@ public class LevelSelection extends Menu {
 
 
 		} catch (IOException e) {
-			System.out.println("An error occurred.");
+			System.out.println("An error occurred reading the save file.");
 			e.printStackTrace();
 		}
 
-		for (var item : scores.entrySet()){
-			System.out.printf("%d %d\n", item.getKey(), item.getValue());
-		}
 	}
 
 	private void addStars(){

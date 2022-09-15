@@ -98,16 +98,6 @@ public class Rigidbody{
         Rectangle img = new Rectangle(x, y, w, h);
         g2d.draw(img);
 
-        /*g2d.setStroke(new BasicStroke(1));
-        g2d.setColor(Color.green);
-
-        origin = getCollisionAreaPos().sub(offset);
-        x = (int)Math.round(origin.getX()*scale.getX());
-        y = (int)Math.round(origin.getY()*scale.getY());
-        w = (int)Math.round(getCollisionAreaSize().getX()*scale.getX());
-        h = (int)Math.round(getCollisionAreaSize().getY()*scale.getY());
-        img = new Rectangle(x, y, w, h);
-        g2d.draw(img);*/
     }
 
     // Called in level update
