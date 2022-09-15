@@ -46,7 +46,7 @@ public class Level2 extends Application.Level {
 
     @Override
     public Level clone(int levelID){
-        Level1 newLevel = new Level1(levelID);
+        Level2 newLevel = new Level2(levelID);
         return newLevel;
     }
     

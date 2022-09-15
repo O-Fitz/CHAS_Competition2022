@@ -11,6 +11,8 @@ public class Player extends Entity{
 	private int jumpCounter = 0;
 	private int jumpCooldown = 0;
 
+	private int playerShotCd = 0;
+
 	private final double speed = 0.4;
 
 	private boolean completedLevel = false;
@@ -57,6 +59,19 @@ public class Player extends Entity{
 			jump();
 			handled = true;
 		}
+		if (key == KeyEvent.VK_Q){
+			// shoot shotgun left]
+			// if(playerShotCd <= 0){
+			// 	MathVector pos = this.getPos();
+			// 	Projectile playerShot = new Projectile(new MathVector(0.5,0.5), pos, new MathVector(10.0,0.0), 10, this.getPos());
+			// 	playerShotCd = 20;
+			// }
+			handled = true;
+		}
+		if (key == KeyEvent.VK_E){
+			// shoot shotgun right
+			handled = true;
+		}
 		return handled;
 	}
 
@@ -70,6 +85,14 @@ public class Player extends Entity{
 		}
 		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
 			setVel(new MathVector(0.0, getVel().getY()));
+			handled = true;
+		}
+		if (key == KeyEvent.VK_Q){
+			// shotgun left key released
+			handled = true;
+		}
+		if (key == KeyEvent.VK_E){
+			// shotgun right released
 			handled = true;
 		}
 		return handled;
@@ -116,6 +139,9 @@ public class Player extends Entity{
 
 		if (jumpCooldown > 0){
 			jumpCooldown--;
+		}
+		if (playerShotCd > 0){
+			playerShotCd--;
 		}
 	}
 

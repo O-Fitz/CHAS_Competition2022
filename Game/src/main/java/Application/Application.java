@@ -109,9 +109,14 @@ public class Application extends JFrame implements ActionListener {
 		switch(l){
 			case 1:
 			level = new Level1(1);
-
+		
+			break; 
 			case 2:
 			level = new Level2(2);
+	
+			break;
+
+			
 		}
 		
 	}
