@@ -7,11 +7,21 @@ import Application.Menu;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class LevelSelection extends Menu {
 
+	private HashMap<Integer, Integer> scores;
+
 	@Override
 	protected void setupUI(){
+
+		scores = new HashMap<>();
+		readScore();
 
 		// Level 1 selector
 		Point pos = new Point(10, 10);
@@ -27,6 +37,64 @@ public class LevelSelection extends Menu {
 
 		// TODO: Draw scores
 
+	}
+
+	public void updateScore(int levelID, int score){
+		scores.put(levelID, score);
+		writeScore();
+	}
+
+	private void writeScore(){
+		//JSONObject jsonObject = new JSONObject();
+
+		try {
+			File file = new File("Saves/save1.txt");
+
+			if (!file.exists()){
+				file.createNewFile();
+			}
+
+			String str = "";
+			for (var item : scores.entrySet()){
+				str = str.concat(String.format("%d %d", item.getKey(), item.getValue()));
+			}
+
+			FileWriter myWriter = new FileWriter("Saves/save1.txt");
+			myWriter.write(str);
+			myWriter.close();
+
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
+
+	private void readScore(){
+		try {
+			File file = new File("Saves/save1.txt");
+
+			if (!file.exists()){
+				file.createNewFile();
+			}
+
+			Scanner myReader = new Scanner(file);
+			while (myReader.hasNextLine()) {
+				String[] data = myReader.nextLine().split(" ");
+				int key = Integer.parseInt(data[0]);
+				int value = Integer.parseInt(data[1]);
+				scores.put(key, value);
+			}
+			myReader.close();
+
+
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+
+		for (var item : scores.entrySet()){
+			System.out.printf("%d %d", item.getKey(), item.getValue());
+		}
 	}
 
 	@Override
