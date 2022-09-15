@@ -24,7 +24,7 @@ public class Level2 extends Application.Level {
         addToRBS(rb);
         rb = new Rigidbody(new MathVector(2.0, 2.0), new MathVector(w+25.0, 10.0)); // 4
         addToRBS(rb);
-        rb = new Rigidbody(new MathVector(2.0, 2.0), new MathVector(w+32.0, 10.0)); // 4
+        rb = new Rigidbody(new MathVector(2.0, 2.0), new MathVector(w+32.0, 10.0)); // 5
 		rb.setCollide(true);
 		addToRBS(rb);
 
@@ -34,6 +34,12 @@ public class Level2 extends Application.Level {
 
         EndPole ep = new EndPole(new MathVector(1.0, 2.0), new MathVector(w+34, 8.0));
 		addToRBS(ep);
+
+        Dimension size = new Dimension(0, 15);
+        MathVector pos = new MathVector(3.0, 4.0);
+		Text text = new Text(pos, size, "^^^ This is your health (max 4) ^^^");
+		text.setStatic(true);
+		texts.add(text);
     }
 
     public Level2(int levelID){
