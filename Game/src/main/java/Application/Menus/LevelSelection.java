@@ -3,15 +3,26 @@ package Application.Menus;
 import Application.ChangeEvent;
 import Application.CustomGUI.Button;
 import Application.CustomGUI.FunctionCall;
+import Application.CustomGUI.Star;
 import Application.Menu;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class LevelSelection extends Menu {
 
+	private HashMap<Integer, Integer> scores;
+
 	@Override
 	protected void setupUI(){
+
+		scores = new HashMap<>();
+		readScore();
 
 		// Level 1 selector
 		Point pos = new Point(10, 10);
@@ -25,8 +36,85 @@ public class LevelSelection extends Menu {
 		Application.CustomGUI.Button b = new Button(pos, size, "LEVEL 1", fun);
 		buttons.add(b);
 
+		// Level 2 selector
+		Point pos2 = new Point(20, 10);
+		FunctionCall fun2 = ()->{
+			ChangeEvent event = new ChangeEvent();
+			event.type = ChangeEvent.eventType.LEVEL_CHANGE;
+			event.level = 2;
+			return event;
+		};
+		Application.CustomGUI.Button b2 = new Button(pos2, size, "LEVEL 2", fun2);
+		buttons.add(b2);
+
+		for (var level : scores.entrySet()){
+			for (int i=0; i<level.getValue(); i++){
+				pos = new Point(i*10, 20*(level.getKey()%4));
+				Star star = new Star(pos, new Dimension(2, 2), Color.YELLOW);
+				stars.add(star);
+			}
+		}
+
 		// TODO: Draw scores
 
+	}
+
+	public void updateScore(int levelID, int score){
+		scores.put(levelID, score);
+		writeScore();
+	}
+
+	private void writeScore(){
+		//JSONObject jsonObject = new JSONObject();
+
+		try {
+			File file = new File("Saves/save1.txt");
+
+			if (!file.exists()){
+				file.createNewFile();
+			}
+
+			String str = "";
+			for (var item : scores.entrySet()){
+				str = str.concat(String.format("%d %d", item.getKey(), item.getValue()));
+			}
+
+			FileWriter myWriter = new FileWriter("Saves/save1.txt");
+			myWriter.write(str);
+			myWriter.close();
+
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
+
+	private void readScore(){
+		try {
+			File file = new File("Saves/save1.txt");
+
+			if (!file.exists()){
+				file.createNewFile();
+			}
+
+			Scanner myReader = new Scanner(file);
+			while (myReader.hasNextLine()) {
+				String[] data = myReader.nextLine().split(" ");
+				int key = Integer.parseInt(data[0]);
+				int value = Integer.parseInt(data[1]);
+				scores.put(key, value);
+			}
+			myReader.close();
+
+
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+
+		for (var item : scores.entrySet()){
+			System.out.printf("%d %d", item.getKey(), item.getValue());
+		}
 	}
 
 	@Override
