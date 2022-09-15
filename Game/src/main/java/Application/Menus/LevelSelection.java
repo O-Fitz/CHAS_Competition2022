@@ -128,7 +128,7 @@ public class LevelSelection extends Menu {
 		stars = new ArrayList<>();
 		for (var level : scores.entrySet()){
 			for (int i=0; i<level.getValue(); i++){
-				Point pos = new Point((int)Math.round((i*4)+16.5*level.getKey()-6), 18+5*(level.getKey()/4));
+				Point pos = new Point((int)Math.round((i*4)+16*level.getKey()-6), 18+5*(level.getKey()/4));
 				Star star = new Star(pos, new Dimension(2, 2), new Color(246, 229, 52));
 				stars.add(star);
 			}
