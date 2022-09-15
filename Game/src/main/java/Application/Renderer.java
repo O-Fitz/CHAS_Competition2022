@@ -92,7 +92,7 @@ public class Renderer extends JPanel {
 
 	}
 
-	public void update(Level l, Application.GameState ga){
+	public void update(Level l, Application.GameState ga, LevelSelection levelSelection){
 		if (!l.equals(level) || !(gamestate.equals(ga))){
 			lastGameState = gamestate;
 
@@ -101,7 +101,7 @@ public class Renderer extends JPanel {
 			fade = true;
 			switching = true;
 		}
-
+		this.levelSelection = levelSelection;
 	}
 
 }

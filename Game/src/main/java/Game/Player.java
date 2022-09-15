@@ -11,6 +11,8 @@ public class Player extends Entity{
 	private int jumpCounter = 0;
 	private int jumpCooldown = 0;
 
+	private int playerShotCd = 0;
+
 	private final double speed = 0.4;
 
 	private boolean completedLevel = false;
@@ -46,15 +48,28 @@ public class Player extends Entity{
 		int key = e.getKeyCode();
 
 		if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
-			setVel(new MathVector(getVel().getX()-speed, getVel().getY()));
+			setVel(new MathVector(-speed, getVel().getY()));
 			handled = true;
 		}
 		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
-			setVel(new MathVector(getVel().getX()+speed, getVel().getY()));
+			setVel(new MathVector(speed, getVel().getY()));
 			handled = true;
 		}
 		if (key == KeyEvent.VK_SPACE){
 			jump();
+			handled = true;
+		}
+		if (key == KeyEvent.VK_Q){
+			// shoot shotgun left]
+			// if(playerShotCd <= 0){
+			// 	MathVector pos = this.getPos();
+			// 	Projectile playerShot = new Projectile(new MathVector(0.5,0.5), pos, new MathVector(10.0,0.0), 10, this.getPos());
+			// 	playerShotCd = 20;
+			// }
+			handled = true;
+		}
+		if (key == KeyEvent.VK_E){
+			// shoot shotgun right
 			handled = true;
 		}
 		return handled;
@@ -72,6 +87,14 @@ public class Player extends Entity{
 			setVel(new MathVector(0.0, getVel().getY()));
 			handled = true;
 		}
+		if (key == KeyEvent.VK_Q){
+			// shotgun left key released
+			handled = true;
+		}
+		if (key == KeyEvent.VK_E){
+			// shotgun right released
+			handled = true;
+		}
 		return handled;
 	}
 
@@ -82,6 +105,7 @@ public class Player extends Entity{
 		switch (ev){
 			case FINISHED -> {completedLevel = true;}
 			case DEATH -> {health = 0;}
+			case DAMAGE -> {health -= 1;}
 		}
 	}
 
@@ -104,7 +128,7 @@ public class Player extends Entity{
 
 	private void jump() {
 		if (canJump()) {
-			setVel(getVel().add(new MathVector(0.0, -1.5)));
+			setVel(getVel().add(new MathVector(0.0, -0.9)));
 			jumpCounter++;
 			jumpCooldown = 2;
 		}
@@ -116,6 +140,9 @@ public class Player extends Entity{
 
 		if (jumpCooldown > 0){
 			jumpCooldown--;
+		}
+		if (playerShotCd > 0){
+			playerShotCd--;
 		}
 	}
 
@@ -135,18 +162,6 @@ public class Player extends Entity{
 
 		g2d.draw(img);
 
-
-		//g2d.setColor(Color.CYAN);
-
-		/*origin = getCollisionAreaPos().sub(offset);
-
-		x = (int)Math.round((origin.getX())*scale.getX());
-		y = (int)Math.round((origin.getY())*scale.getY());
-		w = (int)Math.round((getCollisionAreaSize().getX())*scale.getX());
-		h = (int)Math.round((getCollisionAreaSize().getY())*scale.getY());
-		img = new Rectangle(x, y, w, h);
-
-		g2d.draw(img);*/
 
 	}
 

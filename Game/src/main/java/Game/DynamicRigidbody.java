@@ -11,6 +11,8 @@ public class DynamicRigidbody extends Rigidbody{
 	private MathVector vel;
 	private int updateBuffer = 0;
 
+	private double gravity = 0.1;
+
 
 	// Constructors
 	public DynamicRigidbody(){
@@ -55,9 +57,10 @@ public class DynamicRigidbody extends Rigidbody{
 	protected void checkCollisions(ArrayList<Rigidbody> rbs, double time){
 
 		for (Rigidbody rb : rbs){
+
+			Ray r = new Ray(this.getMidPos(), this.getVel());
+			Side side = RayVsRect(rb, r);
 			if (rb.isCollide()){
-				Ray r = new Ray(this.getMidPos(), this.getVel());
-				Side side = RayVsRect(rb, r);
 				switch (side){
 					case TOP -> {
 						this.setPos(new MathVector(this.getPos().getX(), rb.getPos().getY() + rb.getSize().getX()));
@@ -76,9 +79,9 @@ public class DynamicRigidbody extends Rigidbody{
 						this.setVel(new MathVector(0.0, this.vel.getY()));
 					}
 				}
-				if (side != Side.NONE){
-					onCollision(rb);
-				}
+			}
+			if (side != Side.NONE){
+				onCollision(rb);
 			}
 		}
 	}
@@ -162,12 +165,8 @@ public class DynamicRigidbody extends Rigidbody{
 		}
 
 		if (vel.getY() < 3) {
-			vel = vel.add(new MathVector(0.0, 0.2));
+			vel = vel.add(new MathVector(0.0, gravity));
 		}
-
-//        System.out.println("Pos: "+pos.toString());
-//        System.out.println("Vel: "+vel.toString());
-//        System.out.println();
 
 		move(time);
 		checkCollisions(rbs, time);
@@ -178,13 +177,13 @@ public class DynamicRigidbody extends Rigidbody{
 
 	protected void move(double time) {
 		setPos(getPos().add(vel.mult(time)));
-		//setCollisionAreaPos(getCollisionAreaPos().add(vel.mult(time)));
 	}
 
 	public enum CollisionEvent{
 		NONE,
 		FINISHED,
-		DEATH
+		DEATH,
+		DAMAGE
 	}
 
 }

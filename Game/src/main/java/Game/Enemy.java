@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Enemy extends Entity {
 
     private int shootCooldownReset = 200;
-    private int shootRange = 20;
+    private int shootRange = 15;
     private int shootCooldown = shootCooldownReset;
 
     public Enemy() {
@@ -53,6 +53,11 @@ public class Enemy extends Entity {
         if (shootCooldown > 0){
             shootCooldown--;
         }
+    }
+
+    @Override
+    public void render(Graphics2D g2d, MathVector offset, MathVector scale, Color... color){
+        super.render(g2d, offset, scale, new Color(213, 52, 246));
     }
 
 

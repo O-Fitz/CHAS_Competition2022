@@ -1,6 +1,8 @@
 package Application;
 
 import Application.Levels.Level1;
+import Application.Levels.Level2;
+import Application.Levels.Level3;
 import Application.Menus.LevelSelection;
 import Application.Menus.MainMenu;
 import Application.Menus.OptionsMenu;
@@ -10,6 +12,7 @@ import Physics.MathVector;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -97,16 +100,27 @@ public class Application extends JFrame implements ActionListener {
 
 		handleChangeEvent(event);
 
-		renderer.update(level, gamestate);
+		renderer.update(level, gamestate, levelSelection);
 		renderer.repaint();
 
 	}
 
 	void changeLevel(int l){
 		lastLevel = level;
-		if (l == 1){
-			level = new Level1(1);
+		switch(l){
+			case 1:
+				level = new Level1(1);
+				break; 
+
+			case 2:
+				level = new Level2(2);
+				break;
+			
+			case 3:
+				level = new Level3(3);
+				break;
 		}
+
 	}
 
 	void changeMenu(GameState menu){
@@ -123,14 +137,7 @@ public class Application extends JFrame implements ActionListener {
 		} else{
 			score = 1;
 		}
-		writeScore(levelID, score);
-	}
-
-	private void writeScore(int levelID, int score){
-		File file = new File("Saves/save1.json");
-		System.out.println(file.exists());
-
-		// TODO: Write score to JSON
+		levelSelection.updateScore(levelID, score);
 	}
 
 	private void handleChangeEvent(ChangeEvent event){
@@ -304,7 +311,6 @@ public class Application extends JFrame implements ActionListener {
 		EventQueue.invokeLater(() -> {
 			Application ex = new Application();
 			ex.setVisible(true);
-			ex.writeScore(1, 2);
 		});
 	}
 
