@@ -3,6 +3,7 @@ package Application.Menus;
 import Application.ChangeEvent;
 import Application.CustomGUI.Button;
 import Application.CustomGUI.FunctionCall;
+import Application.CustomGUI.Star;
 import Application.Menu;
 
 import java.awt.*;
@@ -35,7 +36,17 @@ public class LevelSelection extends Menu {
 		Application.CustomGUI.Button b = new Button(pos, size, "LEVEL 1", fun);
 		buttons.add(b);
 
+		for (var level : scores.entrySet()){
+			for (int i=0; i<level.getValue(); i++){
+				pos = new Point(i*10, 20*(level.getKey()%4));
+				Star star = new Star(pos, new Dimension(2, 2), Color.YELLOW);
+				stars.add(star);
+			}
+		}
+
 		// TODO: Draw scores
+
+
 
 	}
 

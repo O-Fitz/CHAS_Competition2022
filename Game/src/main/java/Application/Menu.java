@@ -1,6 +1,7 @@
 package Application;
 
 import Application.CustomGUI.Button;
+import Application.CustomGUI.Star;
 import Application.CustomGUI.Text;
 import Application.Menus.PauseMenu;
 import Physics.MathVector;
@@ -15,6 +16,7 @@ public abstract class Menu {
 
 	protected ArrayList<Button> buttons;
 	protected ArrayList<Text> texts;
+	protected ArrayList<Star> stars;
 	private Button buttonPressed;
 
 	private MathVector scale = new MathVector(1.0, 1.0);
@@ -22,6 +24,7 @@ public abstract class Menu {
 	public Menu(){
 		buttons = new ArrayList<Button>();
 		texts = new ArrayList<>();
+		stars = new ArrayList<Star>();
 		setupUI();
 	}
 
@@ -38,6 +41,10 @@ public abstract class Menu {
 
 		for (var text : texts){
 			text.render(g2d, scale);
+		}
+
+		for (var star : stars){
+			star.render(g2d, scale);
 		}
 	}
 
