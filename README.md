@@ -12,7 +12,7 @@ Created by:
 
 ## How To Download
 
-Download the binary from this [link](https://github.com/O-Fitz/CHAS_Competition2022/releases/download/untagged-795dd4322da8cf5c2bd0/PlatformerGame.zip)
+Download the binary from this [link](https://github.com/O-Fitz/CHAS_Competition2022/releases/download/v1.0.0/PlatformerGame.zip)
 
 Extract if from the zip file
 
